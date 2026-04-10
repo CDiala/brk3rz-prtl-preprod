@@ -4,17 +4,16 @@
 
 ✨ A repository showcasing key [Nx](https://nx.dev) features for Angular monorepos ✨
 🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/setup/connect-workspace/guide). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
+
 ## 📦 Project Overview
 
 This repository demonstrates a production-ready Angular monorepo with:
 
 - **2 Applications**
-
   - `shop` - Angular e-commerce application with product listings and detail views
   - `api` - Backend API with Docker support serving product data
 
 - **6 Libraries**
-
   - `@org/feature-products` - Product listing feature (Angular)
   - `@org/feature-product-detail` - Product detail feature (Angular)
   - `@org/data` - Data access layer for shop features
@@ -231,6 +230,12 @@ npx nx g @nx/angular:app my-app
 npx nx g @nx/angular:lib my-lib
 ```
 
+- prefered script
+
+```bash
+pnpm exec nx generate @nx/angular:library --directory=libs/auth/ --name=auth --parent=apps/web/src/app/app.routes.ts --routing=true --importPath=@insurFlow/auth --no-interactive --dry-run
+```
+
 ### Generate a new Angular component:
 
 ```bash
@@ -280,3 +285,76 @@ Join the Nx community:
 - [LinkedIn](https://www.linkedin.com/company/nrwl)
 - [YouTube](https://www.youtube.com/@nxdevtools)
 - [Blog](https://nx.dev/blog)
+
+# NgRx Setup in Nx Workspace (80/20 Rule)
+
+To install and set up NgRx in an Nx workspace using the 80/20 rule, you should initialize a minimal global state in your application and delegate all specific feature logic to libraries.
+This guide outlines how to implement NgRx following the Nx architectural pattern: keeping the application shell lean (20%) and moving feature logic into libraries (80%).
+
+## 1. Install NgRx Packages
+
+Add the core dependencies to your workspace root:
+
+```bash
+pnpm add @ngrx/store @ngrx/effects @ngrx/store-devtools @ngrx/router-store --save
+```
+
+## 2. Root State Initialization (The 20%)
+
+Initialize the global store in your main application with a minimal configuration. This sets up the provider logic without bloating the app with feature code.
+
+**Command:**
+
+```bash
+nx g @nx/angular:ngrx-root-store --name=global --addDevTools=true --facade=true --skip-import=true
+```
+
+- What app would you like to generate a NgRx configuration for? · web
+
+_Replace `global` with your actual store name._
+
+## 3. Feature State Generation (The 80%)
+
+Generate specific state management inside your functional libraries. This ensures business logic is modular and can be lazy-loaded.
+
+**Command:**
+
+```bash
+npx nx generate @nx/angular:ngrx-feature-store
+```
+
+- ✔ What name would you like to use for the NgRx feature state? An example would be `users`. · auth
+- ✔ What is the path to the module or Routes definition where this NgRx state should be registered? · libs/auth/src/lib/lib.routes.ts
+- ✔ Would you like to use a Facade with your NgRx state? (y/N) · true
+
+## 4. Folder Structure within Libraries
+
+Nx will create a `+state` folder inside your library with the following architecture:
+
+- **actions.ts**: Defines unique events (e.g., `[Products] Load Items`).
+- **reducer.ts**: Pure functions that handle state transitions.
+- **selectors.ts**: Optimized functions to query data from the store.
+- **effects.ts**: Handles side-effects like API calls or navigation.
+
+---
+
+_Note: Always ensure your libraries are exported via `index.ts` so they can be consumed by the application._
+
+### Install Angular material
+
+- Run the command:
+
+```bash
+pnpm add @angular/material
+```
+
+**NB: if you've added nx host to your project, enter your `apps/my-app/project.json` under `targets -> build -> executor` and change `"@nx/angular:webpack-browser"` to `"@angular-devkit/build-angular:browser"` before running the step below. After running the step below, go and roll back this change in the json file**
+
+- Run the code below and follow the steps.
+
+```bash
+nx g @angular/material:ng-add --project=web
+```
+
+- Re-serve project using `pnpm run dev`
+- Test using any angular material component
