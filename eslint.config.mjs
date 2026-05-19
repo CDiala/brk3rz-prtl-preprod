@@ -25,8 +25,22 @@ export default [
               onlyDependOnLibsWithTags: ['scope:shared'],
             },
             {
-              sourceTag: 'scope:shop',
-              onlyDependOnLibsWithTags: ['scope:shop', 'scope:shared'],
+              sourceTag: 'scope:web',
+              onlyDependOnLibsWithTags: [
+                'scope:web',
+                'scope:auth',
+                'scope:shared',
+                'scope:guard',
+                'scope:loading',
+              ],
+            },
+            {
+              sourceTag: 'scope:auth',
+              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:guard',
+              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
             },
             {
               sourceTag: 'scope:api',

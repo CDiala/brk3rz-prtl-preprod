@@ -1,0 +1,52 @@
+<div class="h-full flex flex-col">
+  <mat-nav-list class="px-0 py-2 flex-1">
+    <h2 class="font-bold text-center text-base md:text-lg p-4">
+      Hi, {{ (authFacade.loggedInUser$ | async)?.data?.username | titlecase}}
+    </h2>
+    <mat-divider></mat-divider>
+    @for (item of navigationItems; track item.route) {
+    <a
+      mat-list-item
+      [routerLink]="item.route"
+      class="pl-4! pr-4! rounded-lg! my-1.5! transition-colors duration-200"
+      [class.bg-red-100!]="isLinkActive(item.route)"
+      [class.text-red-700!]="isLinkActive(item.route)"
+      (click)="onLinkClick($event)"
+    >
+      <mat-icon
+        matListItemIcon
+        class="mr-3!"
+        [class.text-red-700!]="isLinkActive(item.route)"
+        >{{ item.icon }}</mat-icon
+      >
+      <span
+        matListItemTitle
+        class="font-medium text-gray-700"
+        [class.text-red-700!]="isLinkActive(item.route)"
+        [class.font-bold!]="isLinkActive(item.route)"
+        >{{ item.label }}</span
+      >
+    </a>
+    }
+  </mat-nav-list>
+
+  <ng-content>
+    @for (item of secondaryNavigationItems; track item.route) {
+    <a
+      mat-list-item
+      [routerLink]="item.route"
+      class="pl-4! pr-4! rounded-lg! my-1.5! transition-colors duration-200 hover:cursor-pointer! group"
+      (click)="onLinkClick($event)"
+    >
+      <mat-icon matListItemIcon class="mr-3! group-hover:text-red-700!"
+        >{{ item.icon }}</mat-icon
+      >
+      <span
+        matListItemTitle
+        class="font-medium text-gray-700 group-hover:text-red-700! group-hover:font-bold!"
+        >{{ item.label }}</span
+      >
+    </a>
+    }
+  </ng-content>
+</div>

@@ -1,0 +1,121 @@
+<div
+  class="bg-linear-to-br from-[#ca1012] to-[#371f1f] min-h-screen flex items-center justify-center px-4 py-8"
+>
+  <div class="w-full max-w-md">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <img
+        class="max-w-30 md:max-w-50 mb-4 md:mb-6 m-auto"
+        src="logo_style.png"
+        alt=""
+      />
+
+      <h1
+        class="text-cyan-100 text-xl md:text-2xl font-semibold text-center mb-4!"
+      >
+        InsurFlow | Verify Identity
+      </h1>
+    </div>
+
+    <!-- Card -->
+    <div
+      class="bg-white rounded-2xl shadow-sm border border-gray-200 py-6 px-5 md:p-8"
+    >
+      <!-- Content -->
+      <div class="space-y-6">
+        <div class="text-center m-0">
+          <span class="material-symbols-outlined text-pink-600 scale-200 mb-4">
+            lock
+          </span>
+
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+            Check your email
+          </h2>
+          <p
+            class="text-sm md:text-base text-gray-600 md:whitespace-nowrap text-wrap!"
+          >
+            We've sent a 6-digit code to
+            <span class="font-semibold text-gray-900">{{ email }}</span>
+          </p>
+        </div>
+
+        <!-- Go Back -->
+        <div class="text-center text-sm text-gray-600 mb-4 mt-1">
+          Not the correct email?
+          <button
+            type="button"
+            (click)="goBack()"
+            class="underline text-sm text-blue-600 font-semibold hover:text-blue-700 transition bg-none border-none cursor-pointer p-0"
+          >
+            Go back
+          </button>
+        </div>
+
+        <!-- OTP Input Fields -->
+        <div class="grid grid-cols-6 gap-2">
+          @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+          <input
+            matInput
+            #otpInput
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            [value]="otpValues()[i]"
+            (input)="onInput($event, i)"
+            (keydown)="onKeyDown($event, i)"
+            (paste)="onPaste($event)"
+            aria-label="OTP digit {{ i + 1 }} of 6"
+            class="h-12 md:h-12 text-center text-lg md:text-2xl font-bold rounded-lg border-2 border-[#cd6275] transition-all duration-200 font-mono focus:outline-none! focus:ring-0"
+            [class]="[
+              'w-12 h-12 md:w-14 md:h-14 text-center text-lg md:text-2xl font-bold rounded-lg',
+              'border-2 border-[#cd6275] transition-all duration-200 font-mono',
+              'focus:outline-none focus:ring-2 focus:ring-offset-2',
+              isInvalid()
+                ? 'border-red-500 bg-red-50 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 bg-white focus:border-rose-600 focus:ring-rose-500'
+            ]"
+          />
+          }
+        </div>
+
+        <!-- Error Message -->
+        @if (isInvalid()) {
+        <p class="text-center text-sm font-medium text-red-600 animate-pulse">
+          Please enter the complete 6-digit code
+        </p>
+        }
+
+        <!-- Verify Button -->
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="isOtpIncomplete()"
+          (click)="onVerify()"
+          class="w-full py-3 px-4 rounded-lg font-semibold text-base transition-all duration-200', 'border-2 border-gray-900"
+          [class.bg-gray-200.text-gray-500.border-gray-200.cursor-not-allowed]="isOtpIncomplete()"
+          [class.bg-gray-900.text-white.hover:bg-gray-800.active:scale-95]="!isOtpIncomplete()"
+          [class]="[
+            '',
+            isOtpIncomplete()
+              ? 'bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed'
+              : 'bg-gray-900 text-white hover:bg-gray-800 active:scale-95'
+          ]"
+        >
+          Verify & Continue
+        </button>
+
+        <!-- Resend Link -->
+        <div class="text-center text-sm text-gray-600">
+          Didn't receive the code?
+          <button
+            type="button"
+            (click)="resendOTP()"
+            class="underline text-sm text-blue-600 font-semibold hover:text-blue-700 transition bg-none border-none cursor-pointer p-0"
+          >
+            Resend
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

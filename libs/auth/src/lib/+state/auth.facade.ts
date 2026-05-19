@@ -1,11 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { select, Store, Action } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
 import * as AuthActions from './auth.actions';
-import * as AuthFeature from './auth.reducer';
 import * as AuthSelectors from './auth.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthFacade {
   private readonly store = inject(Store);
 
@@ -16,6 +17,13 @@ export class AuthFacade {
   loaded$ = this.store.pipe(select(AuthSelectors.selectAuthLoaded));
   allAuth$ = this.store.pipe(select(AuthSelectors.selectAllAuth));
   selectedAuth$ = this.store.pipe(select(AuthSelectors.selectEntity));
+  loggedInUser$ = this.store.pipe(select(AuthSelectors.selectLoggedInUser));
+  passwordResetLinkInfo$ = this.store.pipe(
+    select(AuthSelectors.selectPasswordEmailInfo),
+  );
+  updatedPassword$ = this.store.pipe(
+    select(AuthSelectors.selectPasswordUpdateStatus),
+  );
 
   /**
    * Use the initialization action to perform one

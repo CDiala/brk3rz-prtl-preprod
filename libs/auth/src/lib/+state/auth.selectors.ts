@@ -37,3 +37,18 @@ export const selectEntity = createSelector(
   selectSelectedId,
   (entities, selectedId) => (selectedId ? entities[selectedId] : undefined),
 );
+
+export const selectLoggedInUser = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.visitor,
+);
+
+export const selectPasswordUpdateStatus = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.isPasswordUpdated,
+);
+
+export const selectPasswordEmailInfo = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.resetLinkInfo,
+);

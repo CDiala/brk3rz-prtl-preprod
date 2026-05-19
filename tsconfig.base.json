@@ -15,7 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@insurFlow/auth": ["libs/auth/src/index.ts"]
+      "@insurFlow/auth": ["libs/auth/src/index.ts"],
+      "@insurFlow/shared": ["libs/shared/ui/src/index.ts"],
+      "@insurFlow/core": ["libs/shared/core/src/index.ts"],
+      "@insurFlow/layout": ["libs/layout/src/index.ts"],
+      "@insurFlow/landing-page": ["libs/landing-page/src/index.ts"],
+      "@insurFlow/guard": ["libs/shared/guard/src/index.ts"],
+      "@insurFlow/services": ["libs/shared/services/src/index.ts"],
+      "@insurFlow/loading": ["libs/shared/loading/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

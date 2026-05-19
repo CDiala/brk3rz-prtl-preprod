@@ -52,3 +52,5 @@ vitest.config.*.timestamp*
 
 .nx/polygraph
 __screenshots__/
+
+notes.ts

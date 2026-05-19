@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "npx nx run web:serve"
+    "dev": "npx nx run web:serve",
+    "build-all-test": "npx nx run-many --target=build --all --base-href=/brokersInc/ --configuration=testing",
+    "build-all-pre-prod": "npx nx run-many --target=build --all --base-href=/brokersInc/ --configuration=staging",
+    "build-all-prod": "npx nx run-many --target=build --all --base-href=/brokersInc/ --configuration=production",
+    "build-newPol-test": "npx nx run new_policy:build --base-href=/brokersInc/ --configuration=testing",
+    "build-renewPol-test": "npx nx run renew_policy:build --base-href=/brokersInc/ --configuration=testing"
   },
   "private": true,
   "dependencies": {
@@ -29,6 +34,8 @@
     "postcss": "^8.5.8",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.2.2",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "zone.js": "0.16.0"
   },
   "devDependencies": {

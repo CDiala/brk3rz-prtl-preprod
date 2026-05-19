@@ -1,0 +1,13 @@
+{
+  "name": "loading",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/loading/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:loading"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

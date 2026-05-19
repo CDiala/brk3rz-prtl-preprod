@@ -1,19 +1,61 @@
 import { Route } from '@angular/router';
-import { Auth } from './auth/auth';
-import { provideStore, provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import * as fromAuth from './+state/auth.reducer';
+import { provideState } from '@ngrx/store';
 import { AuthEffects } from './+state/auth.effects';
 import { AuthFacade } from './+state/auth.facade';
+import * as fromAuth from './+state/auth.reducer';
 
 export const authRoutes: Route[] = [
   {
     path: '',
-    component: Auth,
     providers: [
       AuthFacade,
       provideState(fromAuth.AUTH_FEATURE_KEY, fromAuth.authReducer),
       provideEffects(AuthEffects),
     ],
+    loadComponent: () => import('./components/auth/auth').then((m) => m.Auth),
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full',
+      },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./components/login/login').then((m) => m.Login),
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./components/signup/signup').then((m) => m.Signup),
+      },
+      {
+        path: 'password-reset',
+        loadComponent: () =>
+          import('./components/signup/signup').then((m) => m.Signup),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./components/identify-user/identify-user').then(
+            (m) => m.IdentifyUser,
+          ),
+      },
+      // {
+      //   path: 'reset-link-success',
+      //   loadComponent: () =>
+      //     import('./components/password-reset-sent/password-reset-sent').then(
+      //       (m) => m.PasswordResetSent,
+      //     ),
+      // },
+    ],
+  },
+  {
+    path: 'reset-link-success',
+    loadComponent: () =>
+      import('./components/password-reset-sent/password-reset-sent').then(
+        (m) => m.PasswordResetSent,
+      ),
   },
 ];

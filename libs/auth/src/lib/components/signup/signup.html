@@ -1,0 +1,146 @@
+<div class="flex flex-col">
+  <!-- Login Card Container -->
+  <div
+    class="flex flex-1 flex-col md:flex-row gap-2 md:gap-8 items-center md:justify-center px-4 py-8 md:py-12 z-20"
+  >
+    <mat-card class="w-full max-w-md shadow-2xl rounded-2xl p-6">
+      <!-- Header -->
+      <div class="md:mb-2">
+        <!-- Go back button -->
+        <p class="text-left my-2">
+          <a
+            [routerLink]="['/auth/login']"
+            class="text-red-600 text-xl font-semibold hover:text-red-700 transition cursor-pointer"
+          >
+            &larr; Go back
+          </a>
+        </p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">
+          {{ routeInfo.path | titlecase }}
+        </h2>
+        <p class="text-gray-600">Please fill your details to continue.</p>
+      </div>
+
+      <form [formGroup]="resetForm" class="flex flex-col space-y-1 py-4">
+        <mat-form-field>
+          <mat-label>
+            {{routeInfo.path.toLowerCase().includes('reset') ? 'Email' :
+            'Username'}}</mat-label
+          >
+          <input
+            matInput
+            formControlName="username"
+            type="text"
+            placeholder="e.g JohnDoe, john.doe"
+          />
+          @if (resetForm.get('username')?.hasError('required')) {
+          <mat-error>Required</mat-error>
+          }
+          <!--  -->
+          @if (resetForm.get('username')?.hasError('email')) {
+          <mat-error>Invalid email format</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>
+            {{routeInfo.path.toLowerCase().includes('reset') ? 'OTP' : 'Default\
+            password'}}
+          </mat-label>
+          <input matInput formControlName="token" type="text" />
+          @if (resetForm.get('token')?.invalid) {
+          <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <div>
+          <mat-form-field class="block text-sm mb-1 w-full">
+            <mat-label>New password</mat-label>
+            <input
+              matInput
+              formControlName="newPassword"
+              [type]="hide() ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hide.set(!hide())"
+              type="button"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide()"
+            >
+              <mat-icon
+                >{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon
+              >
+            </button>
+            @if (resetForm.get('newPassword')?.touched ) {
+            <mat-hint class="text-red-600 italic"
+              >{{resetForm.get('newPassword')?.hasError('required') ? 'Password\
+              is required' : resetForm.get('newPassword')?.hasError('minlength')
+              ? 'Password doesn\'t meet the minimum required length' :
+              ''}}</mat-hint
+            >
+            }
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="block text-sm mb-1 w-full">
+            <mat-label>Confirm password</mat-label>
+            <input
+              matInput
+              formControlName="confirmNewPassword"
+              [type]="cHide() ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="cHide.set(!cHide())"
+              type="button"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="cHide()"
+            >
+              <mat-icon
+                >{{ cHide() ? 'visibility_off' : 'visibility' }}</mat-icon
+              >
+            </button>
+            @if (resetForm.get('confirmNewPassword')?.touched) {
+            <mat-hint class="text-red-600 italic"
+              >{{ resetForm.get('confirmNewPassword')?.hasError('required') ?
+              'Enter password again' :
+              resetForm.get('confirmNewPassword')?.hasError('passwordMismatch')
+              ? "Password doesn't match" : '' }}</mat-hint
+            >
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 mt-2">
+          <lib-button
+            variant="primary"
+            size="md"
+            type="button"
+            [disabled]="resetForm.invalid || isUpdated()"
+            class="w-full text-center"
+            (clicked)="onSubmit()"
+          >
+            {{routeInfo.path.toLowerCase().includes('reset') ? 'Reset' :
+            'Register'}}
+          </lib-button>
+
+          @if (isPasswordReset()) {
+          <lib-button
+            variant="secondary"
+            size="md"
+            type="button"
+            class="w-full text-center"
+            (clicked)="goToLogin()"
+          >
+            Back to login
+          </lib-button>
+          }
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>
