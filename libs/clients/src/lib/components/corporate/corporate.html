@@ -1,0 +1,469 @@
+<div
+  class="max-w-6xl mx-auto md:p-6 bg-white rounded-xl shadow-lg border border-gray-100"
+>
+  <mat-stepper linear="true" #stepper class="bg-transparent">
+    <!-- STEP 1: CORPORATE INFORMATION -->
+    <mat-step [stepControl]="corporateInfoGroup">
+      <form [formGroup]="corporateInfoGroup" class="space-y-6 pt-6">
+        <div class="border-b border-gray-200 pb-3">
+          <h2 class="text-2xl font-bold text-gray-800">
+            1. Corporate Information
+          </h2>
+          <p class="text-sm text-gray-500">
+            Provide legal details about your registered corporate entity.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <mat-form-field class="block w-full">
+            <mat-label>Company Name</mat-label>
+            <input
+              matInput
+              formControlName="companyName"
+              placeholder="e.g. Acme Corp Ltd"
+            />
+          </mat-form-field>
+
+          <mat-form-field class="block w-full">
+            <mat-label>Incorporation Number (RC / BN)</mat-label>
+            <input
+              matInput
+              formControlName="incorporationNumber"
+              placeholder="e.g. RC123456"
+            />
+          </mat-form-field>
+
+          <!-- 💡 CHANGED TO DROPDOWN -->
+          <mat-form-field class="block w-full">
+            <mat-label>Business Type</mat-label>
+            <mat-select formControlName="businessType">
+              @for (type of businessTypes; track type) {
+              <mat-option [value]="type">{{type}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <mat-form-field class="block w-full">
+            <mat-label>Operating Business Address</mat-label>
+            <input matInput formControlName="operatingAddress" />
+          </mat-form-field>
+
+          <mat-form-field class="block w-full">
+            <mat-label>Registered Business Address</mat-label>
+            <input matInput formControlName="registeredAddress" />
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+          <mat-form-field class="block w-full">
+            <mat-label>Operating Business State</mat-label>
+            <mat-select formControlName="operatingState">
+              @for (state of nigerianStates; track state) {
+              <mat-option [value]="state">{{state}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="block w-full">
+            <mat-label>Operating Business City</mat-label>
+            <input matInput formControlName="operatingCity" />
+          </mat-form-field>
+
+          <mat-form-field class="block w-full">
+            <mat-label>Business Phone Number</mat-label>
+            <input
+              matInput
+              formControlName="businessPhone"
+              placeholder="08012345678"
+            />
+            <mat-error>Provide a valid phone format.</mat-error>
+          </mat-form-field>
+
+          <!-- 💡 CHANGED TO DROPDOWN -->
+          <mat-form-field class="block w-full">
+            <mat-label>Registered Country</mat-label>
+            <mat-select formControlName="registeredCountry">
+              @for (country of countries; track country) {
+              <mat-option [value]="country">{{country}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <mat-form-field class="block w-full">
+            <mat-label>Registered City</mat-label>
+            <input matInput formControlName="registeredCity" />
+          </mat-form-field>
+
+          <!-- 💡 CHANGED TO DROPDOWN -->
+          <mat-form-field class="block w-full">
+            <mat-label>Registered State</mat-label>
+            <mat-select formControlName="registeredState">
+              @for (state of nigerianStates; track state) {
+              <mat-option [value]="state">{{state}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            class="bg-indigo-600! hover:bg-indigo-700! text-white!"
+          >
+            Next: Directors Details
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- STEP 2: PERSONAL DETAILS OF DIRECTORS -->
+    <mat-step [stepControl]="directorsGroup">
+      <form [formGroup]="directorsGroup" class="space-y-8 pt-6">
+        <div
+          class="border-b border-gray-200 pb-3 flex justify-between items-center"
+        >
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">
+              2. Personal Details of Directors
+            </h2>
+            <p class="text-sm text-gray-500">
+              Add information for one or more executive directors.
+            </p>
+          </div>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            class="bg-indigo-600! hover:bg-indigo-700! text-white!"
+            (click)="addDirector()"
+          >
+            <mat-icon>add</mat-icon> Add Director
+          </button>
+        </div>
+
+        <div formArrayName="directors" class="space-y-8">
+          @for (director of directors.controls; track idx; let idx = $index) {
+          <div
+            [formGroupName]="idx"
+            class="p-6 bg-gray-50 rounded-lg border border-gray-200 relative space-y-6"
+          >
+            <div class="flex justify-between items-center">
+              <span
+                class="text-md font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded"
+                >Director #{{idx + 1}}</span
+              >
+              @if (directors.length > 1) {
+              <button
+                type="button"
+                mat-icon-button
+                class="text-red-700!"
+                (click)="removeDirector(idx)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+              }
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+              <mat-form-field class="block w-full">
+                <mat-label>Title</mat-label>
+                <mat-select formControlName="title">
+                  @for (t of titles; track t) {
+                  <mat-option [value]="t">{{t}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>Surname</mat-label>
+                <input matInput formControlName="surname" />
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" />
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>Middle Name (Optional)</mat-label>
+                <input matInput formControlName="middleName" />
+              </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+              <mat-form-field class="block w-full">
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender">
+                  @for (g of genders; track g) {
+                  <mat-option [value]="g">{{g}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <!-- 💡 CONNECTED TO THE COMPONENT BUILT EARLIER -->
+              <lib-custom-datepicker
+                formControlName="dob"
+                label="Date of Birth"
+                [max]="today"
+                [errorMessages]="{ required: 'Director Date of birth is required.' }"
+              >
+              </lib-custom-datepicker>
+
+              <mat-form-field class="block w-full">
+                <mat-label>BVN</mat-label>
+                <input
+                  matInput
+                  formControlName="bvn"
+                  maxlength="11"
+                  placeholder="11 digits"
+                />
+                <mat-error>Must be exactly 11 digits.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>Email Address</mat-label>
+                <input matInput formControlName="email" type="email" />
+              </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+              <mat-form-field class="block w-full">
+                <mat-label>State of Origin</mat-label>
+                <mat-select formControlName="stateOfOrigin">
+                  @for (st of nigerianStates; track st) {
+                  <mat-option [value]="st">{{st}}</mat-option>
+                  }
+                  <mat-option value="Non-Nigerian"
+                    >Non-Nigerian / Other</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+
+              @if (director.get('stateOfOrigin')?.value === 'Non-Nigerian') {
+              <mat-form-field class="block w-full">
+                <mat-label>Specify State/Region</mat-label>
+                <input matInput formControlName="otherStateOfOrigin" />
+              </mat-form-field>
+              }
+
+              <mat-form-field
+                [className]="director.get('stateOfOrigin')?.value === 'Non-Nigerian' ? 'block w-full col-span-1' : 'block w-full col-span-2'"
+              >
+                <mat-label>Contact Address</mat-label>
+                <input matInput formControlName="contactAddress" />
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>Telephone Number</mat-label>
+                <input matInput formControlName="telephoneNumber" />
+              </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <mat-form-field class="block w-full">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" />
+              </mat-form-field>
+
+              <!-- 💡 CHANGED TO DROPDOWN -->
+              <mat-form-field class="block w-full">
+                <mat-label>State</mat-label>
+                <mat-select formControlName="state">
+                  @for (state of nigerianStates; track state) {
+                  <mat-option [value]="state">{{state}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <!-- 💡 CHANGED TO DROPDOWN -->
+              <mat-form-field class="block w-full">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="country">
+                  @for (country of countries; track country) {
+                  <mat-option [value]="country">{{country}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
+              <mat-form-field class="block w-full">
+                <mat-label>Means of Identification</mat-label>
+                <mat-select formControlName="idMeans">
+                  @for (id of idMeans; track id) {
+                  <mat-option [value]="id">{{id}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="block w-full">
+                <mat-label>Identification Number</mat-label>
+                <input matInput formControlName="idNumber" />
+              </mat-form-field>
+
+              <div
+                class="p-3 border-2 border-dashed border-gray-300 rounded bg-white text-center"
+              >
+                <span class="text-xs text-gray-500 block">ID File Upload</span>
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  (change)="onFileUploadPlaceholder($event, 'directors.' + idx + '.idFile')"
+                />
+              </div>
+            </div>
+
+            <!-- EMPLOYMENT DETAILS SUBSECTION -->
+            <div class="bg-white p-4 rounded border border-gray-150 space-y-4">
+              <h4
+                class="text-sm font-semibold text-gray-700 uppercase tracking-wider"
+              >
+                Employment Information
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <mat-form-field class="block w-full">
+                  <mat-label>Occupation</mat-label>
+                  <input matInput formControlName="occupation" />
+                </mat-form-field>
+
+                <mat-form-field class="block w-full">
+                  <mat-label>Employer's Name</mat-label>
+                  <input matInput formControlName="employerName" />
+                </mat-form-field>
+
+                <mat-form-field class="block w-full">
+                  <mat-label>Employer's Phone</mat-label>
+                  <input matInput formControlName="employerPhone" />
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <mat-form-field class="block w-full col-span-2">
+                  <mat-label>Employer's Address</mat-label>
+                  <input matInput formControlName="employerAddress" />
+                </mat-form-field>
+
+                <mat-form-field class="block w-full">
+                  <mat-label>Employer's City</mat-label>
+                  <input matInput formControlName="employerCity" />
+                </mat-form-field>
+
+                <!-- 💡 CHANGED TO DROPDOWN -->
+                <mat-form-field class="block w-full">
+                  <mat-label>Employer's State</mat-label>
+                  <mat-select formControlName="employerState">
+                    @for (state of nigerianStates; track state) {
+                    <mat-option [value]="state">{{state}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+                <!-- 💡 CHANGED TO DROPDOWN -->
+                <mat-form-field class="block w-full md:w-1/3">
+                  <mat-label>Employer's Country</mat-label>
+                  <mat-select formControlName="employerCountry">
+                    @for (country of countries; track country) {
+                    <mat-option [value]="country">{{country}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button
+            type="button"
+            mat-button
+            matStepperPrevious
+            class="text-gray-600"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            class="bg-indigo-600! hover:bg-indigo-700! text-white!"
+          >
+            Next: Consent & Submit
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- STEP 3: CONSENT & SUBMIT -->
+    <mat-step [stepControl]="consentGroup">
+      <form
+        [formGroup]="consentGroup"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6 pt-6"
+      >
+        <div class="border-b border-indigo-200 pb-3">
+          <h2 class="text-2xl font-bold text-gray-800">
+            3. Consent & Authorization
+          </h2>
+        </div>
+
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"
+        >
+          <div class="flex-1">
+            <mat-checkbox
+              formControlName="termsAndConditions"
+              class="text-sm text-gray-700"
+            >
+              I hereby consent to the terms and conditions and authorize
+              processing of my data.
+            </mat-checkbox>
+          </div>
+          <div
+            class="w-full md:w-1/3 p-4 border-2 border-dashed border-indigo-300 rounded bg-white text-center"
+          >
+            <span class="text-xs font-semibold text-indigo-700 block mb-1"
+              >Upload Signature</span
+            >
+            <input
+              type="file"
+              accept="image/*,.pdf"
+              (change)="onFileUploadPlaceholder($event, 'consent.signatureFile')"
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button
+            type="button"
+            mat-button
+            matStepperPrevious
+            class="text-gray-600"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            mat-raised-button
+            color="accent"
+            class="px-8! py-3! font-semibold bg-green-600! hover:bg-green-700! text-white! disabled:bg-gray-300! disabled:text-gray-500!"
+            [disabled]="onboardingForm.invalid"
+          >
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
+</div>

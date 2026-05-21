@@ -6,6 +6,11 @@ export const layoutRoutes: Route[] = [
     path: '',
     loadComponent: () => import('./layout/layout').then((c) => c.Layout),
     children: [
+      {
+        path: 'clients',
+        loadChildren: () =>
+          import('@insurFlow/clients').then((m) => m.clientsRoutes),
+      },
       { path: 'ebusiness', component: Layout },
       { path: 'quotes', component: Layout },
       { path: 'claims', component: Layout },
@@ -13,7 +18,6 @@ export const layoutRoutes: Route[] = [
       { path: 'cnTrack', component: Layout },
       { path: 'commissions', component: Layout },
       { path: 'reports', component: Layout },
-      { path: 'users', component: Layout },
       { path: 'settings', component: Layout },
     ],
   },

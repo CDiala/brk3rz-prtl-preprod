@@ -1,0 +1,23 @@
+<mat-form-field appearance="fill" class="block w-full">
+  <mat-label>{{ label }}</mat-label>
+  <!-- 💡 Dynamic Label -->
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [formControl]="internalControl"
+    [max]="max"
+    [min]="min"
+    [required]="isRequired"
+    [errorStateMatcher]="customErrorMatcher"
+    (blur)="onBlur()"
+  />
+
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+
+  <!-- 💡 Dynamically outputs whichever error message is currently triggered -->
+  @if (ngControl?.control?.invalid && (ngControl?.control?.touched ||
+  ngControl?.control?.dirty)) {
+  <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>
