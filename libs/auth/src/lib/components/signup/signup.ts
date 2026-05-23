@@ -22,7 +22,10 @@ import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
-import { Encryption, Snackbar } from '@insurFlow/services';
+import {
+  // Encryption,
+  Snackbar,
+} from '@insurFlow/services';
 import { UpdatePasswordRequest, User } from '@insurFlow/core';
 import { ButtonComponent } from '@insurFlow/shared';
 import { updatePassword } from '../../+state/auth.actions';
@@ -47,7 +50,7 @@ import { AuthFacade } from '../../+state/auth.facade';
 export class Signup implements OnInit, OnDestroy {
   @ViewChild(FormGroupDirective) form!: FormGroupDirective;
   private fb = inject(FormBuilder);
-  private encryptionService = inject(Encryption);
+  // private encryptionService = inject(Encryption);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private store = inject(Store);
@@ -210,7 +213,8 @@ export class Signup implements OnInit, OnDestroy {
   }
 
   async decryptUserData(encryptedData: string) {
-    return this.encryptionService.decrypt(encryptedData);
+    // return this.encryptionService.decrypt(encryptedData);
+    return {} as any; // TODO: REPLACE WITH ACTUAL IMPLEMENTATION
   }
 
   async onSubmit() {

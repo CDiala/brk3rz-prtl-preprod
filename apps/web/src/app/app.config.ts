@@ -1,3 +1,4 @@
+import { authInterceptor } from '@insurFlow/auth-data';
 import {
   ApplicationConfig,
   isDevMode,
@@ -39,7 +40,7 @@ export const appConfig: ApplicationConfig = {
         ]
       : []),
     provideHttpClient(withFetch()),
-    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
     { provide: APP_CONFIG, useValue: environment },
     MatSnackBar,
     {

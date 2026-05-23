@@ -1,5 +1,6 @@
 export const getApiEndpoints = (baseUrl: string) => ({
   UserManagementAPI: {
+    getPublicKey: 'secure/publickey',
     login: baseUrl + 'Auth/GeneralLogin',
     sendResetLink: baseUrl + 'Auth/ForgetPassword',
     resetPassword: baseUrl + 'Auth/ChangePassword',

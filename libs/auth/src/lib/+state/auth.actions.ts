@@ -20,6 +20,42 @@ export const loadAuthFailure = createAction(
   props<{ error: any }>(),
 );
 
+export const getPublicKey = createAction('[Auth/API] Public Key');
+
+export const getPublicKeySuccess = createAction(
+  '[Auth/API] Public Key Success',
+  props<{ koi: string }>(),
+);
+
+export const getPublicKeyFailure = createAction(
+  '[Auth/API] Public Key Failure',
+  props<{ error: any }>(),
+);
+
+export const getAccessToken = createAction('[Auth/API] Access Token');
+
+export const getAccessTokenSuccess = createAction(
+  '[Auth/API] Access Token Success',
+  props<{ accessToken: string }>(),
+);
+
+export const getAccessTokenFailure = createAction(
+  '[Auth/API] Access Token Failure',
+  props<{ error: any }>(),
+);
+
+export const getRefreshToken = createAction('[Auth/API] Refresh Token');
+
+export const getRefreshTokenSuccess = createAction(
+  '[Auth/API] Refresh Token Success',
+  props<{ refreshToken: string }>(),
+);
+
+export const getRefreshTokenFailure = createAction(
+  '[Auth/API] Refresh Token Failure',
+  props<{ error: any }>(),
+);
+
 export const loginUser = createAction(
   '[Auth/API] Login User',
   props<{ credentials: AuthRequest }>(),
@@ -64,3 +100,5 @@ export const sendResetLinkFailure = createAction(
   '[Auth/Page] Send Password Reset Link Failure',
   props<{ error: any }>(),
 );
+
+export const logout = createAction('[Auth/Page] Logout');

@@ -9,16 +9,48 @@ import {
   UpdatePasswordRequest,
   UserInfo,
   getApiEndpoints,
+  PublicKeyResponse,
 } from '@insurFlow/core';
-import { delay, firstValueFrom, of } from 'rxjs';
-import { Encryption } from '@insurFlow/services';
+import { delay, firstValueFrom, Observable, of } from 'rxjs';
+// import { Encryption } from '@insurFlow/services';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private http: HttpClient = inject(HttpClient);
-  private encryptionService = inject(Encryption);
+  // private encryptionService = inject(Encryption);
   private config = inject(APP_CONFIG);
   private endpoints = getApiEndpoints(this.config.beBaseUrl);
+
+  getPublicKey = async (): Promise<PublicKeyResponse | null> => {
+    if (this.config.isDev) {
+      // TODO: remove the exclamation
+      return firstValueFrom(
+        of({
+          publicKey:
+            '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5gLTqapdoCUZBAud2GSE\nJW0tXUf6FJDHMQS5D0+y3sov8wN+DxEpBUGFPKcbSm1KPt3FEXFqTAPLtcECedyw\nE+EojzXxG8/EZmfMLM51O9pfgWWsbg1l7ASyPm/DrVznCFubZp1WbzOgBOi0ZG/K\nTKRt34vgtQ/rnShwUeYsl49Wd5kFoQv8suaTyzOOBNKmxtgwxIFobVXZbQKHOKaZ\nQNjsdmTTFlx5lBFwR1DIrVzy2PdByIy2/GXvdRo2nynslgAcTdtuAXgX19jxEOHK\nP0XLzM7YRwESLm3905VifpE+fv+Jkw31Q/16RMu2T45k9IC7tTPoCE3GLu9XugaP\nAQIDAQAB\n-----END PUBLIC KEY-----',
+        }).pipe(delay(2000)),
+      );
+    } else {
+      return firstValueFrom(
+        this.http.get<PublicKeyResponse | null>(
+          this.endpoints.UserManagementAPI.getPublicKey,
+        ),
+      );
+    }
+  };
+
+  refreshAccessToken = (): Observable<string | null> => {
+    if (this.config.isDev) {
+      // TODO: remove the exclamation
+      return of(
+        'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJjaGlidXpvLmRpYWxhIiwicm9sZSI6IkksTDEiLCJuYmYiOjE3NzczNjY0NTgsImV4cCI6MTc3NzM3MDA1OCwiaWF0IjoxNzc3MzY2NDU4fQ.Dfy8Jkp_q9f1s1boQFayGrpno5UnNTEFq0sOxIG-uo4BclFYaNBb1nnLPWNCJR5eJM68_yAP6815J326gURqwQ',
+      ).pipe(delay(2000));
+    } else {
+      return this.http.get<string | null>(
+        this.endpoints.UserManagementAPI.getPublicKey,
+      );
+    }
+  };
 
   login = async (
     payload: AuthRequest,
@@ -194,18 +226,20 @@ export class Auth {
   };
 
   getToken = () => {
+    // TODO: implement later
     try {
-      const clientInfo = this.getUserFromStorage();
+      return true;
+      // const clientInfo = this.getUserFromStorage();
 
-      const decryptedUser = this.encryptionService.decrypt(
-        clientInfo,
-      ) as LoggedInClient;
+      // const decryptedUser = this.encryptionService.decrypt(
+      //   clientInfo,
+      // ) as LoggedInClient;
 
-      // console.log('encUser', decryptedUser);
+      // // console.log('encUser', decryptedUser);
 
-      const isLoggedIn = decryptedUser.isLoggedIn || false;
+      // const isLoggedIn = decryptedUser.isLoggedIn || false;
 
-      return isLoggedIn;
+      // return isLoggedIn;
     } catch (error) {
       return false;
     }
@@ -222,16 +256,20 @@ export class Auth {
   };
 
   decryptUser = (data: string) => {
-    return this.encryptionService.decrypt(data) as LoggedInClient;
+    // return this.encryptionService.decrypt(data) as LoggedInClient;
+    return {} as LoggedInClient;
   };
 
   getUser = () => {
     try {
       const clientInfo = this.getUserFromStorage();
 
-      const decryptedUser = this.encryptionService.decrypt(
-        clientInfo,
-      ) as LoggedInClient;
+      // TODO: fix this later
+      // const decryptedUser = this.encryptionService.decrypt(
+      //   clientInfo,
+      // ) as LoggedInClient;
+
+      const decryptedUser = {} as LoggedInClient;
 
       // console.log('decryptedUser', decryptedUser);
 

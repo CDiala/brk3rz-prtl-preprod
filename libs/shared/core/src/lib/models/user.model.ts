@@ -9,6 +9,10 @@ export interface BaseResponse<T> {
   data: T;
 }
 
+export interface PublicKeyResponse {
+  publicKey: string | null;
+}
+
 export interface UserInfo {
   id: number;
   username: string | null;

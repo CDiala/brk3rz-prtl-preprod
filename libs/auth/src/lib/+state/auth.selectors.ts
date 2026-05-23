@@ -52,3 +52,18 @@ export const selectPasswordEmailInfo = createSelector(
   selectAuthState,
   (state: AuthState) => state.resetLinkInfo,
 );
+
+export const selectKoi = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.koi,
+);
+
+export const selectAccess = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.accessToken,
+);
+
+export const selectRefresh = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.refreshToken,
+);
