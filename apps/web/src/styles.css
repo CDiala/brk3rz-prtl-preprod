@@ -10,6 +10,16 @@
       };
 }
 
+/* new add */
+:host {
+  display: block;
+}
+.mat-form-field {
+  width: 100%;
+}
+
+/* new add */
+
 html,
 body {
   height: 100%;

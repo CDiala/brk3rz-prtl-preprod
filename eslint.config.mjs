@@ -50,6 +50,10 @@ export default [
               sourceTag: 'type:data',
               onlyDependOnLibsWithTags: ['type:data'],
             },
+            {
+              sourceTag: 'scope:clients',
+              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
+            },
           ],
         },
       ],

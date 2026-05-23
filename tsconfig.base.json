@@ -23,6 +23,7 @@
       "@insurFlow/guard": ["libs/shared/guard/src/index.ts"],
       "@insurFlow/services": ["libs/shared/services/src/index.ts"],
       "@insurFlow/loading": ["libs/shared/loading/src/index.ts"],
+      "@insurFlow/clients": ["libs/clients/src/index.ts"],
       "@insurFlow/auth-data": ["libs/auth-data/src/index.ts"]
     }
   },

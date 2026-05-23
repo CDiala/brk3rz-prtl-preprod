@@ -3,3 +3,7 @@ export * from './lib/utilities/constants';
 export * from './lib/models/user.model';
 export * from './lib/utilities/config-util';
 export * from './lib/constants/urls';
+export * from './lib/models/residents.interface';
+export * from './lib/models/product.interface';
+export * from './lib/enums/constants.enums';
+export * from './lib/pipes/nice.pipe';

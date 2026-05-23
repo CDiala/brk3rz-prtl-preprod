@@ -37,6 +37,11 @@ export class Sidenav implements OnInit, OnDestroy {
   protected currentRoute = signal<string>(this.router.url);
   protected navigationItems: NavItem[] = [
     {
+      label: 'Client management',
+      icon: 'manage_accounts',
+      route: '/dashboard/clients',
+    },
+    {
       label: 'E-business',
       icon: 'safety_check',
       route: '/dashboard/ebusiness',
@@ -66,11 +71,6 @@ export class Sidenav implements OnInit, OnDestroy {
       label: 'Reports',
       icon: 'bar_chart_4_bars',
       route: '/dashboard/reports',
-    },
-    {
-      label: 'User management',
-      icon: 'manage_accounts',
-      route: '/dashboard/users',
     },
   ];
   protected secondaryNavigationItems: NavItem[] = [
