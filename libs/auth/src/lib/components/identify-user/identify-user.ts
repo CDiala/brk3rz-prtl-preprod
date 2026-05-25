@@ -7,11 +7,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { Snackbar } from '@insurFlow/services';
-import * as AuthActions from '../../+state/auth.actions';
+import * as AuthActions from '../../../../../auth-data/src/lib/+state/auth.actions';
 import { combineLatest, Subscription } from 'rxjs';
 import { ButtonComponent } from '@insurFlow/shared';
 import { MatCard } from '@angular/material/card';
-import { AuthFacade } from '../../+state/auth.facade';
+import { AuthFacade } from '../../../../../auth-data/src/lib/+state/auth.facade';
 
 @Component({
   selector: 'lib-identify-user',

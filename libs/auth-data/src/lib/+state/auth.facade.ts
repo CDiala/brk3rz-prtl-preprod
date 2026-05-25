@@ -24,6 +24,9 @@ export class AuthFacade {
   updatedPassword$ = this.store.pipe(
     select(AuthSelectors.selectPasswordUpdateStatus),
   );
+  koi$ = this.store.pipe(select(AuthSelectors.selectKoi));
+  accessKey$ = this.store.pipe(select(AuthSelectors.selectAccess));
+  refreshKey$ = this.store.pipe(select(AuthSelectors.selectRefresh));
 
   /**
    * Use the initialization action to perform one

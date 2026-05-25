@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { switchMap, catchError, of, exhaustMap, from, map, tap } from 'rxjs';
 import * as AuthActions from './auth.actions';
-import { Auth } from '../services/auth';
+// import { Auth } from '@insurFlow/auth-data';
 import { Snackbar } from '@insurFlow/services';
 import { Router } from '@angular/router';
+import { Auth } from '../services/auth';
 
 @Injectable()
 export class AuthEffects {
@@ -21,6 +22,27 @@ export class AuthEffects {
         console.error('Error', error);
         return of(AuthActions.loadAuthFailure({ error }));
       }),
+    ),
+  );
+
+  getPublicKey$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.getPublicKey),
+      exhaustMap(() =>
+        from(this.authService.getPublicKey()).pipe(
+          map((res) => {
+            if (res && res.publicKey) {
+              return AuthActions.getPublicKeySuccess({ koi: res.publicKey });
+            }
+            return AuthActions.getPublicKeyFailure({
+              error: `Unable to get public key`,
+            });
+          }),
+          catchError((error) => {
+            return of(AuthActions.getPublicKeyFailure({ error }));
+          }),
+        ),
+      ),
     ),
   );
 
@@ -71,15 +93,48 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  updtePassword$ = createEffect(() =>
+  register$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.register),
+      exhaustMap(({ data }) =>
+        from(this.authService.register(data)).pipe(
+          map((res) => {
+            if (res.code === '00') {
+              this.snackbarService.displaySnackBar(
+                `Registration completed successfully!`,
+                '',
+                'green-snackbar',
+              );
+              return AuthActions.registerSuccess({ response: res.data });
+            }
+
+            this.snackbarService.displaySnackBar(
+              `Registration failed, please contact the site admin`,
+              '',
+              'red-snackbar',
+            );
+
+            return AuthActions.registerFailure({
+              error: `Registration failed, please contact the site admin`,
+            });
+          }),
+          catchError((error) => {
+            return of(AuthActions.registerFailure({ error }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  updatePassword$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.updatePassword),
-      exhaustMap(({ data, isRegister }) =>
+      exhaustMap(({ data }) =>
         from(this.authService.updatePassword(data)).pipe(
           map((res) => {
             if (res.code === '00') {
               this.snackbarService.displaySnackBar(
-                `${isRegister ? 'Registration' : 'Password update'} completed successfully!`,
+                `Password update completed successfully!`,
                 '',
                 'green-snackbar',
               );
@@ -87,13 +142,13 @@ export class AuthEffects {
             }
 
             this.snackbarService.displaySnackBar(
-              `${isRegister ? 'Registration' : 'Password update'} failed, please contact the site admin`,
+              `Password update failed, please contact the site admin`,
               '',
               'red-snackbar',
             );
 
             return AuthActions.updatePasswordFailure({
-              error: `${isRegister ? 'Registration' : 'Password update'} failed, please contact the site admin`,
+              error: `Password update failed, please contact the site admin`,
             });
           }),
           catchError((error) => {

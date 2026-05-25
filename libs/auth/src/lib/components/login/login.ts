@@ -22,10 +22,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { ButtonComponent } from '@insurFlow/shared';
 import { AuthRequest, EMAIL_REGEX } from '@insurFlow/core';
-import { loginUser } from '../../+state/auth.actions';
 import { PasswordHintComponent } from '../password-hint/password-hint';
-import { AuthFacade } from '../../+state/auth.facade';
 import { Subscription } from 'rxjs';
+import { AuthFacade, loginUser } from '@insurFlow/auth-data';
 
 @Component({
   selector: 'lib-login',
@@ -103,7 +102,7 @@ export class Login implements AfterViewInit, OnDestroy {
       this.isLoading.set(true);
 
       const credentials: AuthRequest = {
-        username: this.loginForm.value.email,
+        email: this.loginForm.value.email,
         password: this.loginForm.value.password,
       };
 

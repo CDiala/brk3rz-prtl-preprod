@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '@insurFlow/shared';
 import { Snackbar } from '@insurFlow/services';
-import { AuthFacade } from '../../+state/auth.facade';
+import { AuthFacade } from '../../../../../auth-data/src/lib/+state/auth.facade';
 
 @Component({
   selector: 'lib-password-reset-sent',

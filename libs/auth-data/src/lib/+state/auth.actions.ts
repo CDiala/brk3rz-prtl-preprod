@@ -3,6 +3,7 @@ import { AuthEntity } from './auth.models';
 import {
   AuthRequest,
   BaseResponse,
+  RegisterRequest,
   ResetLinkInfo,
   UpdatePasswordRequest,
   UserInfo,
@@ -17,6 +18,42 @@ export const loadAuthSuccess = createAction(
 
 export const loadAuthFailure = createAction(
   '[Auth/API] Load Auth Failure',
+  props<{ error: any }>(),
+);
+
+export const getPublicKey = createAction('[Auth/API] Public Key');
+
+export const getPublicKeySuccess = createAction(
+  '[Auth/API] Public Key Success',
+  props<{ koi: string }>(),
+);
+
+export const getPublicKeyFailure = createAction(
+  '[Auth/API] Public Key Failure',
+  props<{ error: any }>(),
+);
+
+export const getAccessToken = createAction('[Auth/API] Access Token');
+
+export const getAccessTokenSuccess = createAction(
+  '[Auth/API] Access Token Success',
+  props<{ accessToken: string }>(),
+);
+
+export const getAccessTokenFailure = createAction(
+  '[Auth/API] Access Token Failure',
+  props<{ error: any }>(),
+);
+
+export const getRefreshToken = createAction('[Auth/API] Refresh Token');
+
+export const getRefreshTokenSuccess = createAction(
+  '[Auth/API] Refresh Token Success',
+  props<{ refreshToken: string }>(),
+);
+
+export const getRefreshTokenFailure = createAction(
+  '[Auth/API] Refresh Token Failure',
   props<{ error: any }>(),
 );
 
@@ -35,9 +72,24 @@ export const loginUserFailure = createAction(
   props<{ error: any }>(),
 );
 
+export const register = createAction(
+  '[Auth/API] Register',
+  props<{ data: RegisterRequest }>(),
+);
+
+export const registerSuccess = createAction(
+  '[Auth/API] Register Success',
+  props<{ response: any }>(), // TODO: BUILD AN INTERFACE FOR THIS
+);
+
+export const registerFailure = createAction(
+  '[Auth/API] Register Failure',
+  props<{ error: any }>(),
+);
+
 export const updatePassword = createAction(
   '[Auth/API] Update Password',
-  props<{ data: UpdatePasswordRequest; isRegister: boolean }>(),
+  props<{ data: UpdatePasswordRequest }>(),
 );
 
 export const updatePasswordSuccess = createAction(
@@ -64,3 +116,5 @@ export const sendResetLinkFailure = createAction(
   '[Auth/Page] Send Password Reset Link Failure',
   props<{ error: any }>(),
 );
+
+export const logout = createAction('[Auth/Page] Logout');

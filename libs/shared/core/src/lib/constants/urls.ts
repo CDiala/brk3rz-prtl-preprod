@@ -1,11 +1,12 @@
 export const getApiEndpoints = (baseUrl: string) => ({
   UserManagementAPI: {
+    getPublicKey: baseUrl + 'secure/publickey',
     login: baseUrl + 'Auth/GeneralLogin',
+    register: baseUrl + 'broker-auth/register',
     sendResetLink: baseUrl + 'Auth/ForgetPassword',
     resetPassword: baseUrl + 'Auth/ChangePassword',
 
     //
-    registerOTP: baseUrl + 'Profiles/RegisterOTP',
     roleRequestUrl: baseUrl + 'Profiles/SearchAD',
   },
 
