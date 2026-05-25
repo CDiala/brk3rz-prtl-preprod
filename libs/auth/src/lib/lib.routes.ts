@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
 import { provideEffects } from '@ngrx/effects';
 import { provideState } from '@ngrx/store';
-import { AuthEffects } from './+state/auth.effects';
-import { AuthFacade } from './+state/auth.facade';
-import * as fromAuth from './+state/auth.reducer';
+import { AuthEffects } from '../../../auth-data/src/lib/+state/auth.effects';
+import { AuthFacade } from '../../../auth-data/src/lib/+state/auth.facade';
+import * as fromAuth from '../../../auth-data/src/lib/+state/auth.reducer';
 
 export const authRoutes: Route[] = [
   {

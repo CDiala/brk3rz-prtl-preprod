@@ -6,8 +6,6 @@ export interface AppConfig {
   isDev: boolean;
   beBaseUrl: string;
   docDirectory: string;
-  encryptKey: string;
-  encryptIV: string;
 }
 
 export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');

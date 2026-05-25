@@ -13,6 +13,9 @@ export interface AuthState extends EntityState<AuthEntity> {
   visitor?: BaseResponse<UserInfo | null> | null; // info about the currently logged in user
   resetLinkInfo: ResetLinkInfo | null; // email used for password reset
   isPasswordUpdated: boolean | null;
+  koi: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
 }
 
 export interface AuthPartialState {
@@ -27,6 +30,9 @@ export const initialAuthState: AuthState = authAdapter.getInitialState({
   loaded: false,
   resetLinkInfo: null,
   isPasswordUpdated: null,
+  koi: null,
+  accessToken: null,
+  refreshToken: null,
 });
 
 const reducer = createReducer(
@@ -40,6 +46,36 @@ const reducer = createReducer(
     authAdapter.setAll(auth, { ...state, loaded: true }),
   ),
   on(AuthActions.loadAuthFailure, (state, { error }) => ({ ...state, error })),
+  on(AuthActions.getPublicKeySuccess, (state, { koi }) => ({
+    ...state,
+    error: null,
+    koi,
+  })),
+  on(AuthActions.getPublicKeyFailure, (state, { error }) => ({
+    ...state,
+    error,
+    koi: null,
+  })),
+  on(AuthActions.getAccessTokenSuccess, (state, { accessToken }) => ({
+    ...state,
+    error: null,
+    accessToken,
+  })),
+  on(AuthActions.getAccessTokenFailure, (state, { error }) => ({
+    ...state,
+    error,
+    accessToken: null,
+  })),
+  on(AuthActions.getRefreshTokenSuccess, (state, { refreshToken }) => ({
+    ...state,
+    error: null,
+    refreshToken,
+  })),
+  on(AuthActions.getRefreshTokenFailure, (state, { error }) => ({
+    ...state,
+    error,
+    refreshToken: null,
+  })),
   on(AuthActions.loginUserSuccess, (state, { visitor }) => ({
     ...state,
     error: null,

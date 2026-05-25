@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -5,6 +6,7 @@ import {
   OnInit,
   signal,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -21,13 +23,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
-import { Encryption, Snackbar } from '@insurFlow/services';
-import { UpdatePasswordRequest, User } from '@insurFlow/core';
+import { combineLatest, firstValueFrom, Subscription } from 'rxjs';
+import {
+  updatePassword,
+  AuthFacade,
+  CryptoService,
+  register,
+} from '@insurFlow/auth-data';
+import { RegisterRequest, UpdatePasswordRequest, User } from '@insurFlow/core';
+import { Snackbar } from '@insurFlow/services';
 import { ButtonComponent } from '@insurFlow/shared';
-import { updatePassword } from '../../+state/auth.actions';
-import { TitleCasePipe } from '@angular/common';
-import { AuthFacade } from '../../+state/auth.facade';
 
 @Component({
   selector: 'lib-signup',
@@ -47,12 +52,13 @@ import { AuthFacade } from '../../+state/auth.facade';
 export class Signup implements OnInit, OnDestroy {
   @ViewChild(FormGroupDirective) form!: FormGroupDirective;
   private fb = inject(FormBuilder);
-  private encryptionService = inject(Encryption);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private store = inject(Store);
   private facade = inject(AuthFacade);
   private snackbar = inject(Snackbar);
+  private cdr = inject(ChangeDetectorRef);
+  private encryptionService = inject(CryptoService);
   private subscription = new Subscription();
   protected resetForm!: FormGroup;
   protected hide = signal(true);
@@ -69,6 +75,17 @@ export class Signup implements OnInit, OnDestroy {
     this.checkPasswordsMatch();
 
     this.getUserData();
+
+    this.testEncryption();
+  }
+
+  testEncryption() {
+    firstValueFrom(
+      this.encryptionService.encryptRequest(
+        'dialachibuzo@yahoo.com',
+        '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5gLTqapdoCUZBAud2GSE\nJW0tXUf6FJDHMQS5D0+y3sov8wN+DxEpBUGFPKcbSm1KPt3FEXFqTAPLtcECedyw\nE+EojzXxG8/EZmfMLM51O9pfgWWsbg1l7ASyPm/DrVznCFubZp1WbzOgBOi0ZG/K\nTKRt34vgtQ/rnShwUeYsl49Wd5kFoQv8suaTyzOOBNKmxtgwxIFobVXZbQKHOKaZ\nQNjsdmTTFlx5lBFwR1DIrVzy2PdByIy2/GXvdRo2nynslgAcTdtuAXgX19jxEOHK\nP0XLzM7YRwESLm3905VifpE+fv+Jkw31Q/16RMu2T45k9IC7tTPoCE3GLu9XugaP\nAQIDAQAB\n-----END PUBLIC KEY-----',
+      ),
+    ).then((res) => console.log('encrypted email', res));
   }
 
   ngOnInit(): void {
@@ -87,15 +104,23 @@ export class Signup implements OnInit, OnDestroy {
         this.activatedRoute.url,
         this.activatedRoute.queryParams,
       ]).subscribe(([url, params]) => {
+        console.log('url + param', url, params);
+
         this.routeInfo.path = url[0].path.replace(/-/g, ' ');
 
         const userEmail = params['v'] || '';
 
+        console.log('userEmail', userEmail);
+
         if (userEmail) {
           this.resetForm.get('email')?.setValue(userEmail);
           this.resetForm.get('email')?.disable();
+          this.resetForm.get('email')?.updateValueAndValidity();
+          this.cdr.detectChanges();
         } else {
           this.resetForm.get('email')?.enable();
+          this.resetForm.get('email')?.updateValueAndValidity();
+          this.cdr.detectChanges();
         }
 
         this.routeInfo.user = params['v'] || '';
@@ -120,17 +145,17 @@ export class Signup implements OnInit, OnDestroy {
 
   updateValidator() {
     if (this.routeInfo.path.toLowerCase().includes('reset')) {
-      this.resetForm.get('username')?.addValidators(Validators.email);
+      this.resetForm.get('email')?.addValidators(Validators.email);
     } else {
-      this.resetForm.get('username')?.removeValidators(Validators.email);
+      this.resetForm.get('email')?.removeValidators(Validators.email);
     }
 
-    this.resetForm.get('username')?.updateValueAndValidity();
+    this.resetForm.get('email')?.updateValueAndValidity();
   }
 
   createForm() {
     this.resetForm = this.fb.nonNullable.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       token: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmNewPassword: [
@@ -183,10 +208,12 @@ export class Signup implements OnInit, OnDestroy {
       if (decryptedData) {
         this.user = decryptedData;
         this.resetForm.patchValue({
-          username: this.user.email,
+          email: this.user.email,
         });
 
-        this.resetForm.get('username')?.disable();
+        this.resetForm.get('email')?.disable();
+        this.resetForm.get('email')?.updateValueAndValidity();
+        this.cdr.detectChanges();
 
         this.hasUserData = true;
       }
@@ -210,10 +237,14 @@ export class Signup implements OnInit, OnDestroy {
   }
 
   async decryptUserData(encryptedData: string) {
-    return this.encryptionService.decrypt(encryptedData);
+    // return this.encryptionService.decrypt(encryptedData);
+    return {} as any; // TODO: REPLACE WITH ACTUAL IMPLEMENTATION
   }
 
   async onSubmit() {
+    // console.log('activatedRoute', this.activatedRoute.snapshot.url);
+    console.log('router', this.router.url.includes('register'));
+
     const { token, newPassword } = this.resetForm.getRawValue();
 
     if (
@@ -232,20 +263,38 @@ export class Signup implements OnInit, OnDestroy {
 
     if (this.resetForm.valid) {
       const formValue = this.resetForm.getRawValue();
-      const payload: UpdatePasswordRequest = {
-        username: formValue['username'],
-        otp: formValue['token'],
-        password: formValue['newPassword'],
-      };
 
-      console.log('payload', payload);
+      // console.log('payload', payload);
 
-      this.store.dispatch(
-        updatePassword({
-          data: payload,
-          isRegister: this.routeInfo.path.toLowerCase().includes('register'),
-        }),
-      );
+      const isRegister = this.router.url.includes('register');
+
+      if (isRegister) {
+        const registerPayload: RegisterRequest = {
+          email: formValue['email'],
+          defaultPassword: formValue['token'],
+          newPassword: formValue['newPassword'],
+          confirmNewPassword: formValue['confirmNewPassword'],
+        };
+
+        this.store.dispatch(
+          register({
+            data: registerPayload,
+          }),
+        );
+      } else {
+        const resetPasswordPayload: UpdatePasswordRequest = {
+          email: formValue['email'],
+          otp: formValue['token'],
+          newPassword: formValue['newPassword'],
+          confirmNewPassword: formValue['confirmNewPassword'],
+        };
+
+        this.store.dispatch(
+          updatePassword({
+            data: resetPasswordPayload,
+          }),
+        );
+      }
 
       return;
     }
