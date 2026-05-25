@@ -5,4 +5,5 @@ export const environment = {
   docDirectory: './docs',
   encryptKey: '12345678901234567890123456789012',
   encryptIV: '1234567890123456',
+  baseHref: 'brk3rz-prtl-preprod',
 };
