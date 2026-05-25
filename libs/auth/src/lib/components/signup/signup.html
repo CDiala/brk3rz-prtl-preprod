@@ -25,19 +25,19 @@
         <mat-form-field>
           <mat-label>
             {{routeInfo.path.toLowerCase().includes('reset') ? 'Email' :
-            'Username'}}</mat-label
+            'Email'}}</mat-label
           >
           <input
             matInput
-            formControlName="username"
-            type="text"
-            placeholder="e.g JohnDoe, john.doe"
+            formControlName="email"
+            type="email"
+            placeholder="e.g JohnDoe@yahoo.com, john.doe@gmail.com"
           />
-          @if (resetForm.get('username')?.hasError('required')) {
+          @if (resetForm.get('email')?.hasError('required')) {
           <mat-error>Required</mat-error>
           }
           <!--  -->
-          @if (resetForm.get('username')?.hasError('email')) {
+          @if (resetForm.get('email')?.hasError('email')) {
           <mat-error>Invalid email format</mat-error>
           }
         </mat-form-field>

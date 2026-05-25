@@ -10,13 +10,10 @@ import { inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { take, switchMap, catchError, filter, map } from 'rxjs/operators';
-import { AuthFacade } from '../../../../auth/src/lib/+state/auth.facade';
-import {
-  getPublicKey,
-  logout,
-} from '../../../../auth/src/lib/+state/auth.actions';
-import { CryptoService } from '../../../../auth/src/lib/services/crypto.service';
-import { Auth } from '../../../../auth/src/lib/services/auth';
+import { CryptoService } from '../services/crypto.service';
+import { getPublicKey, logout } from '../+state/auth.actions';
+import { AuthFacade } from '../+state/auth.facade';
+import { Auth } from '../services/auth';
 
 export const SKIP_ENCRYPTION = new HttpContextToken<boolean>(() => false);
 
@@ -36,11 +33,17 @@ export const authInterceptor: HttpInterceptorFn = (
   const authFacade = inject(AuthFacade);
   const encryptionService = inject(CryptoService);
   const authService = inject(Auth);
-
   const isFileUpload = req.body instanceof FormData;
   const skipEncryption = req.context.get(SKIP_ENCRYPTION);
+  const authReq = req.clone({
+    withCredentials: true,
+    // setHeaders: {
+    //   // 💡 Captures your current runtime environment origin automatically
+    //   'X-Client-Origin': window.location.origin,
+    // },
+  });
 
-  const authReq = req.clone({ withCredentials: true });
+  console.log('req', authReq);
 
   if (
     skipEncryption ||
@@ -48,6 +51,8 @@ export const authInterceptor: HttpInterceptorFn = (
     !authReq.body ||
     authReq.method === 'GET'
   ) {
+    console.log('get here');
+
     return proceedAndDecrypt(authReq, next, encryptionService).pipe(
       catchError((error: HttpErrorResponse) =>
         handleErrors(
@@ -93,6 +98,7 @@ function handleErrors(
   crypto: CryptoService,
 ): Observable<HttpEvent<any>> {
   if (error.status === 401 && !req.url.includes('/auth/refresh')) {
+    // TODO: replace with actual url
     return handle401Error(req, next, store, auth, crypto);
   }
   return throwError(() => error);
@@ -104,9 +110,17 @@ function encryptAndProceed(
   next: HttpHandlerFn,
   crypto: CryptoService,
 ): Observable<HttpEvent<any>> {
+  console.log('encrypt here');
   return crypto.encryptRequest(req.body, publicKey).pipe(
     switchMap((encryptedPayload) => {
-      const encryptedReq = req.clone({ body: encryptedPayload });
+      const encryptedReq = req.clone({
+        body: encryptedPayload,
+        // setHeaders: {
+        //   // 💡 Captures your current runtime environment origin automatically
+        //   'X-Client-Origin': window.location.origin,
+        // },
+      });
+      console.log('encryptedReq', encryptedReq);
       return proceedAndDecrypt(encryptedReq, next, crypto);
     }),
   );
@@ -117,13 +131,25 @@ function proceedAndDecrypt(
   next: HttpHandlerFn,
   crypto: CryptoService,
 ): Observable<HttpEvent<any>> {
+  console.log('decrypt here');
   return next(req).pipe(
     switchMap((event: any) => {
       if (event.body && event.body.data) {
         return crypto.decryptResponse(event.body.data).pipe(
           map((decryptedData) => {
+            console.log(
+              'fix',
+              event.clone({
+                body: { ...event.body, data: decryptedData },
+              }),
+            );
+
             return event.clone({
               body: { ...event.body, data: decryptedData },
+              // setHeaders: {
+              //   // 💡 Captures your current runtime environment origin automatically
+              //   'X-Client-Origin': window.location.origin,
+              // },
             });
           }),
         );

@@ -3,6 +3,7 @@ import { AuthEntity } from './auth.models';
 import {
   AuthRequest,
   BaseResponse,
+  RegisterRequest,
   ResetLinkInfo,
   UpdatePasswordRequest,
   UserInfo,
@@ -71,9 +72,24 @@ export const loginUserFailure = createAction(
   props<{ error: any }>(),
 );
 
+export const register = createAction(
+  '[Auth/API] Register',
+  props<{ data: RegisterRequest }>(),
+);
+
+export const registerSuccess = createAction(
+  '[Auth/API] Register Success',
+  props<{ response: any }>(), // TODO: BUILD AN INTERFACE FOR THIS
+);
+
+export const registerFailure = createAction(
+  '[Auth/API] Register Failure',
+  props<{ error: any }>(),
+);
+
 export const updatePassword = createAction(
   '[Auth/API] Update Password',
-  props<{ data: UpdatePasswordRequest; isRegister: boolean }>(),
+  props<{ data: UpdatePasswordRequest }>(),
 );
 
 export const updatePasswordSuccess = createAction(

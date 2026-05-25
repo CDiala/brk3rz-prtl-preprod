@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { take, firstValueFrom } from 'rxjs';
-import { AuthFacade } from '@insurFlow/auth';
+import { AuthFacade } from '@insurFlow/auth-data';
 import { Snackbar } from '@insurFlow/services';
 
 export const authGuard: CanActivateFn = async () => {

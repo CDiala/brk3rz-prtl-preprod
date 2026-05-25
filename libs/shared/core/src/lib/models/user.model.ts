@@ -1,5 +1,5 @@
 export interface AuthRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -24,10 +24,18 @@ export interface UserInfo {
   token: string | null;
 }
 
+export interface RegisterRequest {
+  email: string;
+  defaultPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 export interface UpdatePasswordRequest {
-  username: string;
+  email: string;
   otp: string;
-  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 export interface ResetLinkInfo {
@@ -51,17 +59,6 @@ export interface LoggedInClient {
 export interface User {
   email: string;
   phone: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  otp: string;
-}
-
-export interface ResetPasswordRequest {
-  email: string;
-  otp: string;
-  credential: string;
 }
 
 export interface ResetPasswordResponse {

@@ -4,7 +4,7 @@
   "sourceRoot": "libs/auth-data/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:auth-data"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

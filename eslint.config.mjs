@@ -29,6 +29,7 @@ export default [
               onlyDependOnLibsWithTags: [
                 'scope:web',
                 'scope:auth',
+                'scope:auth-data',
                 'scope:shared',
                 'scope:guard',
                 'scope:loading',
@@ -36,11 +37,15 @@ export default [
             },
             {
               sourceTag: 'scope:auth',
-              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
+              onlyDependOnLibsWithTags: [
+                'scope:auth',
+                'scope:auth-data',
+                'scope:shared',
+              ],
             },
             {
               sourceTag: 'scope:guard',
-              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
+              onlyDependOnLibsWithTags: ['scope:auth-data', 'scope:shared'],
             },
             {
               sourceTag: 'scope:api',
@@ -52,6 +57,10 @@ export default [
             },
             {
               sourceTag: 'scope:clients',
+              onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:auth-data',
               onlyDependOnLibsWithTags: ['scope:auth', 'scope:shared'],
             },
           ],

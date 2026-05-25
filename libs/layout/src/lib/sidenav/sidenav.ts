@@ -1,4 +1,4 @@
-import { AuthFacade } from '@insurFlow/auth';
+import { AuthFacade } from '@insurFlow/auth-data';
 import {
   Component,
   output,
