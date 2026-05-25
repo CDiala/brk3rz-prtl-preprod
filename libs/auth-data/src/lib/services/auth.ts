@@ -23,7 +23,7 @@ export class Auth {
   private endpoints = getApiEndpoints(this.config.beBaseUrl);
 
   getPublicKey = async (): Promise<PublicKeyResponse | null> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       // TODO: remove the exclamation
       return firstValueFrom(
         of({
@@ -41,7 +41,7 @@ export class Auth {
   };
 
   refreshAccessToken = (): Observable<string | null> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       // TODO: remove the exclamation
       return of(
         'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJjaGlidXpvLmRpYWxhIiwicm9sZSI6IkksTDEiLCJuYmYiOjE3NzczNjY0NTgsImV4cCI6MTc3NzM3MDA1OCwiaWF0IjoxNzc3MzY2NDU4fQ.Dfy8Jkp_q9f1s1boQFayGrpno5UnNTEFq0sOxIG-uo4BclFYaNBb1nnLPWNCJR5eJM68_yAP6815J326gURqwQ',
@@ -56,7 +56,7 @@ export class Auth {
   login = async (
     payload: AuthRequest,
   ): Promise<BaseResponse<UserInfo | null>> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       // return firstValueFrom(
       //   of({
       //     code: null,
@@ -126,7 +126,7 @@ export class Auth {
   register = (
     payload: RegisterRequest,
   ): Promise<BaseResponse<boolean | null>> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       return firstValueFrom(
         of({
           code: '-98',
@@ -154,7 +154,7 @@ export class Auth {
   };
 
   sendResetLink = (payload: string): Promise<BaseResponse<boolean | null>> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       return firstValueFrom(
         of({
           code: '-98',
@@ -182,7 +182,7 @@ export class Auth {
   updatePassword = async (
     payload: UpdatePasswordRequest,
   ): Promise<BaseResponse<boolean>> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       // return firstValueFrom(
       //   of({
       //     code: '-98',
@@ -211,7 +211,7 @@ export class Auth {
   /** */
 
   getRole = async (payload: AuthRole): Promise<AuthRole> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       return firstValueFrom(
         of({
           id: 0,
