@@ -1,0 +1,342 @@
+<!-- Navigation Header -->
+<nav
+  class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 w-full"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <div class="w-16 md:w-28 -z-30 rounded border-red-600">
+          <img src="logo_style.png" alt="ZGIC logo" />
+        </div>
+        <span class="text-lg font-bold text-red-600">InsurFlow</span>
+      </div>
+
+      <!-- Login link -->
+      <a
+        [routerLink]="['/auth']"
+        class="text-gray-600 hover:text-red-600 font-medium text-xl"
+        >Login</a
+      >
+    </div>
+  </div>
+</nav>
+
+<div class="bg-white pt-16">
+  <!-- Hero Section -->
+  <section class="bg-white py-12 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Left Content -->
+        <div>
+          <lib-badge variant="danger">INSURANCE PLATFORM V1.0</lib-badge>
+
+          <h1
+            class="mt-6 text-4xl md:text-5xl font-bold text-red-700 leading-tight"
+          >
+            Streamlined Insurance<br />Management for Insurance Brokers.
+          </h1>
+
+          <p class="mt-6 text-gray-600 text-lg leading-relaxed">
+            A unified platform for insurance agents. Generate quotes, manage
+            policies, track claims, and monitor commissions—all in one secure
+            environment.
+          </p>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <lib-button
+              variant="primary"
+              size="md"
+              (clicked)="navigateTo('/auth')"
+              >Get Started Free →</lib-button
+            >
+            <!-- <lib-button variant="text" size="md">Schedule Demo</lib-button> -->
+          </div>
+        </div>
+
+        <!-- Right Card -->
+        <div class="hidden md:block">
+          <lib-card
+            variant="accent"
+            class="h-80 bg-linear-to-br from-gray-800 via-red-700 to-red-600 flex flex-col justify-between"
+          >
+            <div
+              class="text-xs font-semibold text-red-100 uppercase tracking-widest"
+            >
+              Key Benefit
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white">
+                99.2% Quote Accuracy
+              </h3>
+            </div>
+          </lib-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Competencies Section -->
+  <section class="bg-gray-50 py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-red-700 mb-2">
+        Insurance Operations Made Simple
+      </h2>
+      <p class="text-gray-600 mb-12">
+        Manage every aspect of the insurance lifecycle with integrated tools
+        designed for efficiency and compliance.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <!-- Left: Integrated Project Oversight -->
+        <div>
+          <lib-card variant="light">
+            <div class="flex justify-between items-start mb-4">
+              <div class="p-4 bg-red-100 flex rounded">
+                <mat-icon class="text-red-600! scale-125">dashboard</mat-icon>
+              </div>
+              <lib-badge variant="danger">NEW MODULE</lib-badge>
+            </div>
+            <h3 class="text-xl font-bold text-red-700 mb-4">
+              Dashboard & Quote Management
+            </h3>
+            <p class="text-gray-600 text-sm mb-6">
+              Real-time quote generation, policy tracking, and client lifecycle
+              management within a single, high-fidelity dashboard designed for
+              insurance professionals.
+            </p>
+
+            <!-- Stats -->
+            <div class="flex gap-6 pt-6 border-t border-gray-200">
+              <lib-stat-block
+                value="99.2%"
+                label="Quote Accuracy"
+              ></lib-stat-block>
+              <div class="border-l border-red-600"></div>
+              <lib-stat-block
+                value="2 min"
+                label="Avg Quote Time"
+              ></lib-stat-block>
+            </div>
+          </lib-card>
+        </div>
+
+        <!-- Right: Predictive Analytics (Featured) -->
+        <div class="md:pt-8">
+          <lib-card variant="accent">
+            <div class="flex items-start gap-3 mb-4">
+              <mat-icon class="text-white scale-125">trending_up</mat-icon>
+              <h3 class="text-xl font-bold text-white">
+                Smart Claims & Analytics
+              </h3>
+            </div>
+            <p class="text-red-100 text-sm mb-6">
+              Leverage advanced analytics to forecast claims patterns, detect
+              fraud risks, and identify upselling opportunities automatically.
+            </p>
+            <a
+              href="#"
+              class="text-white font-semibold hover:text-red-100 flex items-center gap-2"
+            >
+              Learn More →
+            </a>
+          </lib-card>
+        </div>
+      </div>
+
+      <!-- Three Features Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <lib-card variant="light">
+          <mat-icon class="text-red-600! scale-150 mb-4"
+            >request_quote</mat-icon
+          >
+          <h3 class="text-lg font-bold text-red-700 mb-3">Quote Generation</h3>
+          <p class="text-gray-600 text-sm">
+            Create and manage insurance quotes in minutes with real-time rate
+            calculations.
+          </p>
+        </lib-card>
+
+        <lib-card variant="light">
+          <mat-icon class="text-red-600! scale-150 mb-4">policy</mat-icon>
+          <h3 class="text-lg font-bold text-red-700 mb-3">Policy Management</h3>
+          <p class="text-gray-600 text-sm">
+            Automate policy issuance, renewals, and updates with full compliance
+            tracking.
+          </p>
+        </lib-card>
+
+        <lib-card variant="light">
+          <mat-icon class="text-red-600! scale-150 mb-4">assessment</mat-icon>
+          <h3 class="text-lg font-bold text-red-700 mb-3">Claims Processing</h3>
+          <p class="text-gray-600 text-sm">
+            Streamline claims submission, tracking, and settlement with
+            transparency.
+          </p>
+        </lib-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Specifications Section -->
+  <section class="bg-white py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-red-700 mb-12">
+        System Specifications
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Quote Engine -->
+        <div>
+          <p
+            class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6"
+          >
+            Quote Engine
+          </p>
+          <div class="space-y-6">
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">
+                Real-time Rate Calculation
+              </h4>
+              <p class="text-sm text-gray-600">
+                Real-time rate calculation with 200+ insurance rule
+                configurations.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">Sub-second Response</h4>
+              <p class="text-sm text-gray-600">
+                Sub-second quote response time across multiple coverage types.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Policy Management -->
+        <div>
+          <p
+            class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6"
+          >
+            Policy Management
+          </p>
+          <div class="space-y-6">
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">Automated Lifecycle</h4>
+              <p class="text-sm text-gray-600">
+                Automated policy lifecycle management with compliance tracking.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">Document Generation</h4>
+              <p class="text-sm text-gray-600">
+                Document generation and e-signature integration for instant
+                issuance.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Claims & Analytics -->
+        <div>
+          <p
+            class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6"
+          >
+            Claims & Analytics
+          </p>
+          <div class="space-y-6">
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">Fraud Detection</h4>
+              <p class="text-sm text-gray-600">
+                AI-powered fraud detection with real-time claim validation.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-bold text-red-600 mb-2">Predictive Analytics</h4>
+              <p class="text-sm text-gray-600">
+                Predictive analytics for claims pattern analysis and risk
+                assessment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="">
+    <div
+      class="bg-red-600 rounded-3xl py-4 md:py-20 mb-16 md:mb-24 max-w-7xl px-24 mx-auto text-center text-white"
+    >
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Ready to Digitize Your Insurance Business?
+      </h2>
+      <p class="text-red-100 mb-8 text-lg">
+        Join hundreds of insurance agents using InsurFlow to automate quotes,
+        manage policies, and grow their business with confidence.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <lib-button
+          variant="secondary"
+          size="md"
+          (clicked)="navigateTo('/auth')"
+          >Get Started Free</lib-button
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-16 md:w-28 rounded border-red-600">
+              <img src="logo_style.png" alt="ZGIC logo" />
+            </div>
+            <span class="font-bold text-rose-300">InsurFlow</span>
+          </div>
+          <p class="text-sm text-gray-400">
+            Streamlined insurance management for insurance brokers.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-rose-300 mb-4">Product</h4>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a href="#" class="hover:text-white transition">Features</a>
+            </li>
+            <li><a href="#" class="hover:text-white transition">Pricing</a></li>
+            <li>
+              <a href="#" class="hover:text-white transition">Security</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-rose-300 mb-4">Company</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition">About</a></li>
+            <li><a href="#" class="hover:text-white transition">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition">Careers</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-rose-300 mb-4">Legal</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition">Privacy</a></li>
+            <li><a href="#" class="hover:text-white transition">Terms</a></li>
+            <li><a href="#" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="border-t border-gray-800 pt-8 text-center text-sm text-gray-400"
+      >
+        <p>&copy; {{year}} Zenith General Insurance Co. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>

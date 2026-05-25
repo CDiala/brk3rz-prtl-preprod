@@ -1,0 +1,71 @@
+<div class="flex flex-wrap justify-between items-center w-full">
+  <mat-form-field
+    (mousedown)="getFile(dataSheetControl)"
+    class="w-full hover:cursor-pointer"
+  >
+    <mat-label class="hover:cursor-pointer"
+      >{{ (placeholder | nice : 20) || 'Import file' }}</mat-label
+    >
+    <div class="flex items-center">
+      <input
+        matInput
+        [formControl]="dataSheetControl"
+        readonly
+        class="hover:cursor-pointer !w-[calc(100%-50px)]"
+      />
+
+      <button
+        type="button"
+        mat-icon-button
+        matTooltip="Click to select file"
+        class="!absolute !right-0 !top-3"
+      >
+        <span class="material-symbols-outlined"> upload </span>
+      </button>
+    </div>
+    <!-- <mat-hint class="text-purple-600 italic">{{ accceptedDocuments }}</mat-hint>
+    @if (dataSheetControl.touched && dataSheetControl.hasError('required')) {
+    <mat-hint class="text-red-600 italic"
+      >{{ "Document is required" }}</mat-hint
+    >
+    } -->
+
+    <mat-hint class="text-purple-600 italic">
+      <span class="mr-4">{{ accceptedDocuments }}</span>
+      @if (dataSheetControl.touched && dataSheetControl.hasError('required')) {
+      <span class="text-red-600 italic">{{ "Document is required" }}</span>
+      }
+    </mat-hint>
+  </mat-form-field>
+</div>
+
+<!-- Display selected files with delete buttons -->
+@if (fileList && fileList.length) {
+<div class="border-t border-gray-300 flex gap-4 flex-wrap">
+  @for (file of fileList; track $index) {
+  <div class="flex items-center justify-between scale-[0.8] -translate-x-3">
+    <span class="truncate max-w-[calc(100%-40px)]"
+      >{{ file.name | nice : 20 }}</span
+    >
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="preview file"
+      (click)="preview(file.name, $index)"
+    >
+      <span class="material-symbols-outlined text-purple-500">
+        visibility
+      </span>
+    </button>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Remove file"
+      (click)="removeFile(file.name)"
+    >
+      <span class="material-symbols-outlined text-red-500"> delete </span>
+    </button>
+  </div>
+  }
+</div>
+}

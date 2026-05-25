@@ -1,0 +1,48 @@
+<lib-header></lib-header>
+<button
+  mat-icon-button
+  color="accent"
+  class="absolute! self-start z-10! md:hidden"
+  (click)="toggleDrawer()"
+>
+  <mat-icon>menu</mat-icon>
+</button>
+
+<mat-drawer-container class="" [hasBackdrop]="false">
+  <mat-drawer
+    class="w-full! md:w-80! drawer rounded-none!"
+    #drawer
+    [opened]="!isMobile()"
+    [mode]="isMobile() ? 'over' : 'side'"
+  >
+    <div class="p-5 pt-14 h-full">
+      <lib-sidenav (linkClicked)="closeDrawerOnMobile()"></lib-sidenav>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="flex flex-col h-[calc(100vh-64.5px)]">
+      <main class="grow overflow-scroll">
+        <!-- Link Selected -->
+        @if (src()) {
+        <div class="bg-white rounded-2xl p-3 pt-14 shadow-soft h-auto">
+          <!-- router outlet here -->
+          <router-outlet></router-outlet>
+        </div>
+        }
+
+        <!-- No link selected -->
+        @if (!src()) {
+        <section
+          class="bg-gray-100 h-full w-full flex justify-center items-center text-center"
+        >
+          <div class="flex flex-col gap-1">
+            <h2 class="text-3xl md:text-7xl font-medium text-red-600">
+              Welcome
+            </h2>
+          </div>
+        </section>
+        }
+      </main>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

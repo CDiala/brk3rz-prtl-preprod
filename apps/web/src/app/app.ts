@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+import { RouterOutlet } from '@angular/router';
+import { Loading } from '@insurFlow/loading';
 
 @Component({
-  imports: [NxWelcome, RouterModule],
+  imports: [RouterOutlet, Loading],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',

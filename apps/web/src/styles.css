@@ -1,2 +1,74 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
+
+@theme {
+  --font-display: "Satoshi", "sans-serif";
+  --boxShadow: {
+        ghost: "0px 8px 34px 5px rgba(203, 16, 17, 0.14)",
+        dark: "0px 8px 34px 5px rgb(0 0 0 / 15%)",
+        soft: "0 10px 30px rgba(0,0,0,0.08)",
+      };
+}
+
+/* new add */
+:host {
+  display: block;
+}
+.mat-form-field {
+  width: 100%;
+}
+
+/* new add */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.material-symbols-outlined {
+  @apply font-['Material_Symbols_Outlined']!;
+}
+
+.mat-mdc-unelevated-button:not(:disabled) {
+  color: var(--mdc-filled-button-label-text-color, var(--mat-sys-on-primary));
+  background-color: #cb1011 !important; /* var(--mdc-filled-button-container-color, var(--mat-sys-primary)); */
+}
+
+.mat-mdc-card-outlined:not(:hover) {
+  background-color: white !important;
+}
+
+.green-snackbar,
+.green-snackbar .mdc-snackbar__surface {
+  @apply bg-[#0EA746]! text-white!;
+}
+
+.green-snackbar button {
+  @apply bg-[#0EA746]! text-[#4f1414]! border-none;
+}
+
+.red-snackbar,
+.red-snackbar .mdc-snackbar__surface {
+  @apply bg-[#f95342]! text-[#161616]!;
+}
+
+.red-snackbar button {
+  @apply bg-[#f95342]! text-[#161616]! border-none;
+}
+
+.orange-snackbar,
+.orange-snackbar .mdc-snackbar__surface {
+  @apply bg-[#f74fe8]! text-black!;
+}
+
+.orange-snackbar button {
+  @apply bg-[#f74fe8]! text-black! border-none;
+}
+
+.mat-mdc-snack-bar-label.mdc-snackbar__label {
+  @apply text-center;
+}

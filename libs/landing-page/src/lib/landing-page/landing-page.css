@@ -1,0 +1,58 @@
+/* Landing page styles */
+
+/* Ensure smooth scrolling and proper overflow handling */
+:host {
+  display: block;
+  overflow-x: hidden;
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 768px) {
+  /* Mobile navigation adjustments */
+  nav {
+    padding: 1rem;
+  }
+
+  /* Hero section mobile adjustments */
+  h1 {
+    font-size: 2rem;
+  }
+
+  /* Ensure proper spacing on mobile */
+  section {
+    padding: 2rem 1rem;
+  }
+
+  /* Adjust card padding on mobile */
+  lib-card {
+    margin-bottom: 1rem;
+  }
+
+  /* Button full width on mobile */
+  lib-button {
+    width: 100%;
+  }
+}
+
+/* Smooth transitions for interactive elements */
+a {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
