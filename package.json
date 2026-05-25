@@ -4,11 +4,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx nx run web:serve",
-    "build-all-test": "npx nx run-many --target=build --all --base-href=/brokersInc/ --configuration=testing",
-    "build-all-pre-prod": "npx nx run-many --target=build --all --base-href=/zincobrok3rs1ncpr3prod/ --configuration=preprod",
-    "build-all-prod": "npx nx run-many --target=build --all --base-href=/brokersInc/ --configuration=production",
-    "build-newPol-test": "npx nx run new_policy:build --base-href=/brokersInc/ --configuration=testing",
-    "build-renewPol-test": "npx nx run renew_policy:build --base-href=/brokersInc/ --configuration=testing"
+    "build-all-test": "npx nx run-many --target=build --all --configuration=testing",
+    "build-all-pre-prod": "npx nx run-many --target=build --all --configuration=staging",
+    "build-all-prod": "npx nx run-many --target=build --all --configuration=production",
+    "build-newPol-test": "npx nx run new_policy:build --configuration=testing",
+    "build-renewPol-test": "npx nx run renew_policy:build --configuration=testing"
   },
   "private": true,
   "dependencies": {

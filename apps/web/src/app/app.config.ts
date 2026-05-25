@@ -23,9 +23,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { APP_CONFIG } from '@insurFlow/core';
 import { loadingInterceptor } from '@insurFlow/loading';
 import { environment } from '../environments/environment';
+import { APP_BASE_HREF } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: APP_BASE_HREF, useValue: environment.baseHref },
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
