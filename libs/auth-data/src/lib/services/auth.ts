@@ -23,7 +23,7 @@ export class Auth {
   private endpoints = getApiEndpoints(this.config.beBaseUrl);
 
   getPublicKey = async (): Promise<PublicKeyResponse | null> => {
-    if (this.config.isDev) {
+    if (!this.config.isDev) {
       // TODO: remove the exclamation
       return firstValueFrom(
         of({

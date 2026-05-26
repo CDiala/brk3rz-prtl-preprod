@@ -38,6 +38,18 @@
     "tweetnacl-util": "^0.15.1",
     "zone.js": "0.16.0"
   },
+  "pnpm": {
+  "allowBuilds": {
+    "@parcel/watcher": true,
+    "@swc/core": true,
+    "esbuild": true,
+    "less": true,
+    "lmdb": true,
+    "msgpackr-extract": true,
+    "nx": true,
+    "unrs-resolver": true
+  }
+},
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "2.2.0",
     "@analogjs/vitest-angular": "2.2.0",
