@@ -1,12 +1,14 @@
 export const getApiEndpoints = (baseUrl: string) => ({
   UserManagementAPI: {
     getPublicKey: baseUrl + 'secure/publickey',
-    login: baseUrl + 'Auth/GeneralLogin',
+    login: baseUrl + 'broker-auth/login',
     register: baseUrl + 'broker-auth/register',
     sendResetLink: baseUrl + 'Auth/ForgetPassword',
     resetPassword: baseUrl + 'Auth/ChangePassword',
 
-    //
+    //https://brokersportal.runasp.net/api/broker-auth/login
+    //https://brokersportal.runasp.net/Auth/GeneralLogin
+
     roleRequestUrl: baseUrl + 'Profiles/SearchAD',
   },
 
