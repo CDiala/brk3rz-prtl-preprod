@@ -76,7 +76,7 @@ export class Auth {
     }
   };
 
-  login = async (payload: AuthRequest): Promise<AuthResponse | null> => {
+ login = async (payload: AuthRequest): Promise<AuthResponse | null> => {
     if (this.config.isDev) {
       // TODO: remove the exclamation
       return firstValueFrom(
@@ -213,7 +213,6 @@ export class Auth {
       );
     }
   };
-
   updatePassword = async (
     payload: UpdatePasswordRequest,
   ): Promise<BaseResponse<boolean>> => {
