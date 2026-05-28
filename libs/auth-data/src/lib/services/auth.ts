@@ -11,19 +11,42 @@ import {
   getApiEndpoints,
   PublicKeyResponse,
   RegisterRequest,
+  AuthResponse,
+  sendResetLinkPayload,
+  userMeResponse,
+  sendResetLinkResponse,
 } from '@insurFlow/core';
-import { delay, firstValueFrom, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  delay,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
+import {
+  getUserMeResData,
+  getUserMeSuccessResponse,
+  uploadLicenceSuccessResponse,
+  userSuccessResponse,
+} from '../+state/auth.models';
+import { AppState } from '../+state/app.state';
+import { Store } from '@ngrx/store';
 // import { Encryption } from '@insurFlow/services';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private http: HttpClient = inject(HttpClient);
+  private userSubject = new BehaviorSubject<AuthResponse | null>(null);
+  private user: AuthResponse | null = null;
+  private store: Store<AppState> = inject(Store);
   // private encryptionService = inject(Encryption);
   private config = inject(APP_CONFIG);
   private endpoints = getApiEndpoints(this.config.beBaseUrl);
 
   getPublicKey = async (): Promise<PublicKeyResponse | null> => {
-    if (!this.config.isDev) {
+    if (this.config.isDev) {
       // TODO: remove the exclamation
       return firstValueFrom(
         of({
@@ -53,75 +76,62 @@ export class Auth {
     }
   };
 
-  login = async (
-    payload: AuthRequest,
-  ): Promise<BaseResponse<UserInfo | null>> => {
+  login = async (payload: AuthRequest): Promise<AuthResponse | null> => {
     if (this.config.isDev) {
-      // return firstValueFrom(
-      //   of({
-      //     code: null,
-      //     message: null,
-      //     data: {
-      //       id: 0,
-      //       username: null,
-      //       userDept: null,
-      //       userBranch: null,
-      //       userEmail: null,
-      //       passwordChanged: null,
-      //       role: [],
-      //       token: null,
-      //     },
-      //   }).pipe(delay(2000)),
-      // );
-
       // TODO: remove the exclamation
       return firstValueFrom(
         of({
           code: '00',
-          message: 'Login Successful',
+          message: 'success',
           data: {
-            id: 1,
-            username: 'chibuzo.diala',
-            userDept: 'InfoTech',
-            userBranch: 'head office',
-            userEmail: 'Chibuzo.Diala@zenithinsurance.com.ng',
-            passwordChanged: null,
-            role: ['I', 'L1'],
-            token:
-              'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJjaGlidXpvLmRpYWxhIiwicm9sZSI6IkksTDEiLCJuYmYiOjE3NzczNjY0NTgsImV4cCI6MTc3NzM3MDA1OCwiaWF0IjoxNzc3MzY2NDU4fQ.Dfy8Jkp_q9f1s1boQFayGrpno5UnNTEFq0sOxIG-uo4BclFYaNBb1nnLPWNCJR5eJM68_yAP6815J326gURqwQ',
+            userId: 'b829bc61ca94414d8abb2b930bba929c',
+            accessExpiresAt: '2026-05-26T17:36:33.8143159+00:00',
+            refreshExpiresAt: '2026-05-26T18:26:33.8143483+00:00',
           },
         }).pipe(delay(2000)),
       );
-
-      // return firstValueFrom(
-      //   of({
-      //     code: '-99',
-      //     message: 'username or password is incorrect',
-      //     data: {
-      //       id: 0,
-      //       username: null,
-      //       userDept: null,
-      //       userBranch: null,
-      //       userEmail: null,
-      //       passwordChanged: null,
-      //       role: [],
-      //       token: null,
-      //     },
-      //   }).pipe(delay(2000)),
-      // );
     } else {
       console.log('payload', payload);
       // // eslint-disable-next-line no-debugger
       // debugger;
 
       return firstValueFrom(
-        this.http.post<BaseResponse<UserInfo | null>>(
+        this.http.post<AuthResponse | null>(
           this.endpoints.UserManagementAPI.login,
           payload,
         ),
-      );
+      ).then((response) => {
+        if (response) {
+          this.emitData(response); // Or this.emitData.next(response) if it's a Subject
+        }
+        return response;
+      });
     }
   };
+
+  emitData(value: AuthResponse | null) {
+    this.userSubject.next(value);
+  }
+
+  dataListener() {
+    return this.userSubject.asObservable();
+  }
+
+  getUserState(): Observable<UserInfo | null> {
+    return this.dataListener().pipe(
+      switchMap(
+        (res) => (res?.data ? of(res.data) : this.getAppState()), // Fallback to app state
+      ),
+    );
+  }
+    isAuthenticated(): Observable<boolean> {
+    return this.getUserState().pipe(map((user) => !!user));
+  }
+
+  // Assuming getAppState method uses a selector to fetch credentials
+  private getAppState(): Observable<UserInfo | null> {
+    return this.store.select((state) => state.auth.visitor?.data || null);
+  }
 
   register = (
     payload: RegisterRequest,
@@ -134,13 +144,6 @@ export class Auth {
           data: false,
         }),
       );
-      // return firstValueFrom(
-      //   of({
-      //     code: '00',
-      //     message: 'Successful',
-      //     data: true,
-      //   }),
-      // );
     } else {
       // const newUrl = new URL(this.endpoints.UserManagementAPI.register);
 
@@ -153,7 +156,40 @@ export class Auth {
     }
   };
 
-  sendResetLink = (payload: string): Promise<BaseResponse<boolean | null>> => {
+  getRoleUser = (payload: object): Promise<getUserMeSuccessResponse> => {
+    if (this.config.isDev) {
+      return firstValueFrom(
+        of({
+          code: '-98',
+          message: 'Invalid Operation',
+          data: {
+            id: 'dfgdgdc',
+            companyName: 'Acme Brokers Ltd',
+            registrationNumber: 'RC123456',
+            userName: 'chibuzor',
+            emailAddress: 'Chibuzo.Diala@zenithinsurance.com.ng',
+            address: '1 Main St',
+            state: 'Lagos',
+            lga: 'Ikeja',
+            directorName: 'Jane Doe',
+            contactNumbers: '08031234567',
+            tin: 'TIN123456',
+          },
+        }),
+      );
+    } else {
+      return firstValueFrom(
+        this.http.post<getUserMeSuccessResponse>(
+          this.endpoints.UserManagementAPI.authMe,
+          payload,
+        ),
+      );
+    }
+  };
+
+  sendResetLink = (
+    payload: sendResetLinkPayload,
+  ): Promise<sendResetLinkResponse<boolean | null>> => {
     if (this.config.isDev) {
       return firstValueFrom(
         of({
@@ -170,11 +206,10 @@ export class Auth {
       //   }),
       // );
     } else {
-      const newUrl = new URL(this.endpoints.UserManagementAPI.sendResetLink);
-      newUrl.searchParams.append('emailAddress', payload);
+      const newUrl = this.endpoints.UserManagementAPI.sendResetLink;
 
       return firstValueFrom(
-        this.http.get<BaseResponse<boolean | null>>(newUrl.href),
+        this.http.post<sendResetLinkResponse<boolean | null>>(newUrl, payload),
       );
     }
   };
@@ -256,6 +291,67 @@ export class Auth {
           this.endpoints.UserManagementAPI.roleRequestUrl,
           payload,
         ),
+      );
+    }
+  };
+
+  getUserNameEP = async (
+    payload: string,
+  ): Promise<userSuccessResponse | null> => {
+    if (!this.config.isDev) {
+      return firstValueFrom(
+        of({
+          code: '00',
+          message: 'string',
+          data: {
+            companyName: 'Zenith Insurance',
+          },
+        }),
+      );
+    } else {
+      console.log('payload', payload);
+
+      // 1. If {userId} is a path template parameter inside the endpoint string, replace it directly
+      const updatedEndpoint =
+        this.endpoints.UserManagementAPI.getUserName.replace(
+          '{userId}',
+          payload,
+        );
+      const newUrl = new URL(updatedEndpoint);
+
+      // 2. Separate the configuration from the immediate return execution block
+      // (If you actually needed query params, you would do: newUrl.searchParams.set('userId', payload); here)
+
+      // 3. Keep ONLY the HttpClient Observable inside the firstValueFrom method wrapper
+      return firstValueFrom(
+        this.http.get<userSuccessResponse>(newUrl.toString()),
+      );
+    }
+  };
+
+  uploadLicenceEP = async (
+    formData: FormData,
+  ): Promise<uploadLicenceSuccessResponse | null> => {
+    if (!this.config.isDev) {
+      return firstValueFrom(
+        of({
+          code: '00',
+          message: 'string',
+          data: null,
+        }),
+      );
+    } else {
+      console.log('formData', formData);
+
+      // 1. If {userId} is a path template parameter inside the endpoint string, replace it directly
+      const updatedEndpoint = this.endpoints.UserManagementAPI.uploadLicence;
+
+      // 2. Separate the configuration from the immediate return execution block
+      // (If you actually needed query params, you would do: newUrl.searchParams.set('userId', payload); here)
+
+      // 3. Keep ONLY the HttpClient Observable inside the firstValueFrom method wrapper
+      return firstValueFrom(
+        this.http.post<uploadLicenceSuccessResponse>(updatedEndpoint, formData),
       );
     }
   };

@@ -1,7 +1,12 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { authInterceptor } from '@insurFlow/auth-data';
 import {
+  APP_INITIALIZER,
   ApplicationConfig,
+  inject,
   isDevMode,
+  PLATFORM_ID,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -10,7 +15,7 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { provideStore } from '@ngrx/store';
+import { provideState, provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import {
@@ -24,6 +29,11 @@ import { APP_CONFIG } from '@insurFlow/core';
 import { loadingInterceptor } from '@insurFlow/loading';
 import { environment } from '../environments/environment';
 import { APP_BASE_HREF } from '@angular/common';
+import { StatePersistenceService } from '../../../../libs/auth-data/src/lib/services/state-persistence.service';
+import { initializeApp } from '../../../../libs/auth-data/src/lib/+state/initialize-app';
+import { AuthEffects } from 'libs/auth-data/src/lib/+state/auth.effects';
+import * as fromHost from 'libs/auth-data/src/lib/+state/auth.reducer';
+import { AuthFacade } from 'libs/auth-data/src/lib/+state/auth.facade';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,7 +42,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
     provideStore({}), // Initializing with an empty object for the root
-    provideEffects([]), // Initializing with an empty array for the root
+    provideState(fromHost.AUTH_FEATURE_KEY, fromHost.authReducer),
+    AuthFacade,
+    provideEffects([AuthEffects]), // Initializing with an empty array for the root
     ...(isDevMode()
       ? [
           provideStoreDevtools({
@@ -44,6 +56,20 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
     { provide: APP_CONFIG, useValue: environment },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeApp,
+    //   deps: [Store, StatePersistenceService, PLATFORM_ID], // Add PLATFORM_ID here
+    //   multi: true,
+    // },
+    provideAppInitializer(() => {
+      const store = inject(Store);
+      const persistenceService = inject(StatePersistenceService);
+      const platformId = inject(PLATFORM_ID);
+
+      // ✅ Executes the flattened function directly
+      initializeApp(store, persistenceService, platformId);
+    }),
     MatSnackBar,
     {
       provide: IMAGE_LOADER,

@@ -5,6 +5,7 @@ import {
   HttpEvent,
   HttpErrorResponse,
   HttpContextToken,
+  HttpHeaders,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -35,15 +36,25 @@ export const authInterceptor: HttpInterceptorFn = (
   const authService = inject(Auth);
   const isFileUpload = req.body instanceof FormData;
   const skipEncryption = req.context.get(SKIP_ENCRYPTION);
+  const isFormData = req.body instanceof FormData;
+
+  // 2. Clone the request dynamically
   const authReq = req.clone({
     withCredentials: true,
-    // setHeaders: {
-    //   // 💡 Captures your current runtime environment origin automatically
-    //   'X-Client-Origin': window.location.origin,
-    // },
+    setHeaders: {
+      // 🔥 Only append application/json if it is NOT a FormData payload
+      ...(!isFormData && { 'Content-Type': 'application/json' }),
+
+      // Your other global headers stay here completely unaffected
+      // 'X-Client-Origin': window.location.origin,
+    },
   });
 
   console.log('req', authReq);
+
+  return next(authReq);
+
+  console.log('after next', authReq);
 
   if (
     skipEncryption ||

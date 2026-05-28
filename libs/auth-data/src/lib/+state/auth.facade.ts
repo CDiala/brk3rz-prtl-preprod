@@ -27,6 +27,9 @@ export class AuthFacade {
   koi$ = this.store.pipe(select(AuthSelectors.selectKoi));
   accessKey$ = this.store.pipe(select(AuthSelectors.selectAccess));
   refreshKey$ = this.store.pipe(select(AuthSelectors.selectRefresh));
+  userErrorId$ = this.store.pipe(select(AuthSelectors.selectAuthUserId));
+  uploadLicenceRes$ = this.store.pipe(select(AuthSelectors.uploadLicenceRes));
+  userMeRes$ = this.store.pipe(select(AuthSelectors.getUserMeRes));
 
   /**
    * Use the initialization action to perform one

@@ -1,13 +1,15 @@
 import { createAction, props } from '@ngrx/store';
-import { AuthEntity } from './auth.models';
+import { AuthEntity, getUserMeSuccessResponse, uploadLicenceSuccessResponse, userNameData, userSuccessResponse } from './auth.models';
 import {
   AuthRequest,
+  AuthResponse,
   BaseResponse,
   RegisterRequest,
   ResetLinkInfo,
   UpdatePasswordRequest,
   UserInfo,
 } from '@insurFlow/core';
+import { AuthState } from './auth.reducer';
 
 export const initAuth = createAction('[Auth Page] Init');
 
@@ -62,14 +64,34 @@ export const loginUser = createAction(
   props<{ credentials: AuthRequest }>(),
 );
 
+export const getNameUser = createAction(
+  '[Auth/API] Get User Name',
+  props<{ userId: string }>(),
+);
+
+export const getNameUserSuccess = createAction(
+  '[Auth/API] Get User Name Success',
+  props<{ res: userSuccessResponse }>(),
+);
+
+export const getNameUserFailure = createAction(
+  '[Auth/API] Get User Name Failure',
+  props<{ error: any }>(),
+);
+
 export const loginUserSuccess = createAction(
   '[Auth/API] Login User Success',
-  props<{ visitor: BaseResponse<UserInfo | null> }>(),
+  props<{ visitor: AuthResponse | null }>(),
 );
 
 export const loginUserFailure = createAction(
   '[Auth/API] Login User Failure',
   props<{ error: any }>(),
+);
+
+export const getRoleUsers = createAction(
+  '[Auth/API] Get Role Users',
+  props<{ data: string }>(),
 );
 
 export const register = createAction(
@@ -118,3 +140,37 @@ export const sendResetLinkFailure = createAction(
 );
 
 export const logout = createAction('[Auth/Page] Logout');
+
+export const clearAuthError = createAction(
+  '[Auth] Clear Auth Error'
+);
+
+export const getUserIdError = createAction(
+  '[Auth] Get User ID Error',
+  props<{ userId: string | null }>()
+);
+
+export const restoreState = createAction(
+  '[App Initialization] Restore State',
+  props<{ global: Partial<AuthState> }>() // Accept partial state to allow flexibility
+);
+
+export const uploadLicence = createAction(
+  '[Auth/API] Upload Licence',
+  props<{ formData: FormData }>(),
+);
+
+export const uploadLicenceSuccess = createAction(
+  '[Auth/API] Upload Licence Success',
+  props<{ response: uploadLicenceSuccessResponse }>(), // TODO: BUILD AN INTERFACE FOR THIS
+);
+
+export const uploadLicenceFailure = createAction(
+  '[Auth/API] Upload Licence Failure',
+  props<{ error: any }>(),
+);
+
+export const getUserMeSuccess = createAction(
+  '[Auth/API] Get User Me Success',
+  props<{ userMe: getUserMeSuccessResponse }>(),
+);

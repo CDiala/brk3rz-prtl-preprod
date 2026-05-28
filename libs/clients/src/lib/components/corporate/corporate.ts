@@ -61,7 +61,7 @@ export class Corporate implements OnInit {
   countries = ['nigeria'];
   today = new Date();
 
-  private phonePattern = /^(?:\+234|0)\d{8}$/;
+  private phonePattern = /^(?:\+234|0)\d{10}$/;
   private bvnPattern = /^\d{11}$/;
 
   ngOnInit(): void {

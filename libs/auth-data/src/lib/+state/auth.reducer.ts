@@ -1,8 +1,10 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
-import { AuthEntity } from './auth.models';
-import { BaseResponse, ResetLinkInfo, UserInfo } from '@insurFlow/core';
+import { AuthEntity, getUserMeSuccessResponse, uploadLicenceSuccessResponse, userAuthId, userSuccessResponse } from './auth.models';
+import { AuthResponse, BaseResponse, ResetLinkInfo, UserInfo } from '@insurFlow/core';
+import { BackendError } from 'libs/auth/src/lib/components/login/login';
 
 export const AUTH_FEATURE_KEY = 'auth';
 
@@ -10,12 +12,17 @@ export interface AuthState extends EntityState<AuthEntity> {
   selectedId?: string | number; // which Auth record has been selected
   loaded: boolean; // has the Auth list been loaded
   error?: string | null; // last known error (if any)
-  visitor?: BaseResponse<UserInfo | null> | null; // info about the currently logged in user
+  visitor?: AuthResponse | null; // info about the currently logged in user
   resetLinkInfo: ResetLinkInfo | null; // email used for password reset
   isPasswordUpdated: boolean | null;
   koi: string | null;
   accessToken: string | null;
   refreshToken: string | null;
+  specialError: BackendError | null;
+  userId: userAuthId | null;
+  usernameRes: userSuccessResponse | null;
+  uploadLicenceRes: uploadLicenceSuccessResponse | null;
+  getUserMe: getUserMeSuccessResponse | null;
 }
 
 export interface AuthPartialState {
@@ -33,6 +40,11 @@ export const initialAuthState: AuthState = authAdapter.getInitialState({
   koi: null,
   accessToken: null,
   refreshToken: null,
+  specialError: null,
+  userId: null,
+  usernameRes: null,
+  uploadLicenceRes: null,
+  getUserMe: null,
 });
 
 const reducer = createReducer(
@@ -41,6 +53,10 @@ const reducer = createReducer(
     ...state,
     loaded: false,
     error: null,
+  })),
+    on(AuthActions.restoreState, (state, { global }) => ({
+    ...state,
+    ...global, // Merge the restored state with the current state
   })),
   on(AuthActions.loadAuthSuccess, (state, { auth }) =>
     authAdapter.setAll(auth, { ...state, loaded: true }),
@@ -87,6 +103,7 @@ const reducer = createReducer(
     visitor: null,
     loaded: false,
     error,
+    specialError: error as BackendError, // Capture the structured error for more detailed handling
   })),
   on(AuthActions.updatePasswordSuccess, (state, { response }) => ({
     ...state,
@@ -108,7 +125,32 @@ const reducer = createReducer(
     resetLinkInfo: null,
     error,
   })),
-);
+on(AuthActions.clearAuthError, (state) => ({
+  ...state,
+  error: null,
+  specialError: null, // Reset both fields cleanly together,
+  usernameData: null // Optional: clear it when cleaning up error states
+})),
+on(AuthActions.getUserIdError, (state, { userId }) => ({
+  ...state,
+  userId: { userId },
+})),
+on(AuthActions.getNameUserSuccess, (state, { res }) => ({
+  ...state,
+  usernameRes: res, // Saves the data payload cleanly to the state
+  error: null, // Clear any previous errors on success
+})),
+on(AuthActions.getUserMeSuccess, (state, { userMe }) => ({
+  ...state,
+  getUserMe: userMe, // Saves the data payload cleanly to the state
+  error: null, // Clear any previous errors on success
+})),
+on(AuthActions.uploadLicenceSuccess, (state, { response }) => ({
+  ...state,
+  uploadLicenceRes: response, // Saves the data payload cleanly to the state
+  error: null, // Clear any previous errors on success
+})),
+)
 
 export function authReducer(state: AuthState | undefined, action: Action) {
   return reducer(state, action);

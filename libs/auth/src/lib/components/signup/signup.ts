@@ -270,12 +270,13 @@ export class Signup implements OnInit, OnDestroy {
 
       if (isRegister) {
         const registerPayload: RegisterRequest = {
-          email: formValue['email'],
-          defaultPassword: formValue['token'],
-          newPassword: formValue['newPassword'],
-          confirmNewPassword: formValue['confirmNewPassword'],
+          email: formValue['email'].trim(),
+          defaultPassword: formValue['token'].trim(),
+          newPassword: formValue['newPassword'].trim(),
+          confirmNewPassword: formValue['confirmNewPassword'].trim(),
         };
-
+        console.log('registerPayload', registerPayload);
+        
         this.store.dispatch(
           register({
             data: registerPayload,

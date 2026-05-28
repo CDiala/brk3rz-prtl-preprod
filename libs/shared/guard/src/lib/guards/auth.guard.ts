@@ -11,7 +11,7 @@ export const authGuard: CanActivateFn = async () => {
 
   try {
     const userInfo = await firstValueFrom(facade.loggedInUser$.pipe(take(1)));
-    if (!userInfo || !userInfo.data?.userEmail) {
+    if (!userInfo || !userInfo?.data.userId) {
       alert('log in first');
       snackbar.displaySnackBar(
         'You need to be logged in to access this page',

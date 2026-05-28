@@ -3,11 +3,14 @@ export const getApiEndpoints = (baseUrl: string) => ({
     getPublicKey: baseUrl + 'secure/publickey',
     login: baseUrl + 'broker-auth/login',
     register: baseUrl + 'broker-auth/register',
-    sendResetLink: baseUrl + 'Auth/ForgetPassword',
+    sendResetLink: baseUrl + 'broker-auth/send-reset-password-email',
     resetPassword: baseUrl + 'Auth/ChangePassword',
+    authMe: baseUrl + 'broker-auth/me',
+    getUserName: baseUrl + 'broker-auth/license-info/{userId}',
+    uploadLicence: baseUrl + 'broker-auth/upload-license',
+//https://brokersportal.runasp.net/api/broker-auth/upload-license
 
-    //https://brokersportal.runasp.net/api/broker-auth/login
-    //https://brokersportal.runasp.net/Auth/GeneralLogin
+
 
     roleRequestUrl: baseUrl + 'Profiles/SearchAD',
   },

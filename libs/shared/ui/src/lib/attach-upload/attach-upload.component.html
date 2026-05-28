@@ -1,0 +1,48 @@
+<!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
+<div class="flex flex-wrap justify-between items-center w-full">
+  <mat-form-field
+    (mousedown)="getFile(dataSheetControl)"
+    class="w-full hover:cursor-pointer"
+  >
+    <mat-label class="hover:cursor-pointer">{{
+      placeholder || 'Import file'
+    }}</mat-label>
+    <div class="flex items-center">
+      <input
+        matInput
+        [formControl]="dataSheetControl"
+        readonly
+        class="hover:cursor-pointer"
+      />
+      <button
+        type="button"
+        mat-icon-button
+        matTooltip="Click to select file"
+        class="!absolute !right-0 !top-3"
+      >
+        <span class="material-symbols-outlined"> upload </span>
+      </button>
+    </div>
+  </mat-form-field>
+</div>
+
+<!-- Display selected files with delete buttons -->
+<div
+  *ngIf="fileList?.length"
+  class="border-t border-gray-300 pt-2 flex gap-4 flex-wrap"
+>
+  <div
+    *ngFor="let file of fileList"
+    class="flex items-center justify-between mb-2"
+  >
+    <span class="truncate max-w-[calc(100%-40px)]">{{ file.name }}</span>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Remove file"
+      (click)="removeFile(file.name)"
+    >
+      <span class="material-symbols-outlined text-red-500"> delete </span>
+    </button>
+  </div>
+</div>
