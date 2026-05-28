@@ -14,14 +14,46 @@ export interface PublicKeyResponse {
 }
 
 export interface UserInfo {
-  id: number;
-  username: string | null;
-  userDept: string | null;
-  userBranch: string | null;
-  userEmail: string | null;
-  passwordChanged: string | null;
-  role: string[] | null;
-  token: string | null;
+  userId: string | null;
+  accessExpiresAt: string | null;
+  refreshExpiresAt: string | null;
+}
+
+export interface AuthResponse {
+  code: string;
+  message: string;
+  data: UserInfo;
+}
+
+// export interface UserInfo {
+//   id: number;
+//   username: string | null;
+//   userDept: string | null;
+//   userBranch: string | null;
+//   userEmail: string | null;
+//   passwordChanged: string | null;
+//   role: string[] | null;
+//   token: string | null;
+// }
+
+export interface userMeResponse<userMeData> {
+  code: string;
+  message: string;
+  data: userMeData | null;
+}
+
+export interface userMeData {
+  id: string;
+  companyName: string;
+  registrationNumber: string;
+  userName: string;
+  emailAddress: string;
+  address: string;
+  state: string;
+  lga: string;
+  directorName: string;
+  contactNumbers: string;
+  tin: string;
 }
 
 export interface RegisterRequest {
@@ -113,4 +145,20 @@ export interface RoleModel {
   id: number;
   roleName: string;
   createDate: string;
+}
+
+export interface sendResetLinkPayload {
+  email: string;
+}
+
+export interface sendResetLinkResponse<T> {
+  code: string;
+  message: string;
+  data: T;
+}
+
+
+export interface useCredForUpload {
+  userId: string;
+  companyName: string;
 }

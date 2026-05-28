@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Route } from '@angular/router';
 import { provideEffects } from '@ngrx/effects';
 import { provideState } from '@ngrx/store';
@@ -40,6 +41,13 @@ export const authRoutes: Route[] = [
         loadComponent: () =>
           import('./components/identify-user/identify-user').then(
             (m) => m.IdentifyUser,
+          ),
+      },
+       {
+        path: 'licence-renewal',
+        loadComponent: () =>
+          import('./components/licence-renewal/licence-renewal').then(
+            (l) => l.LicenceRenewal,
           ),
       },
       // {

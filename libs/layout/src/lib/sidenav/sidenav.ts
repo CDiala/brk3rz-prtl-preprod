@@ -1,4 +1,4 @@
-import { AuthFacade } from '@insurFlow/auth-data';
+import { Auth, AuthFacade } from '@insurFlow/auth-data';
 import {
   Component,
   output,
@@ -35,6 +35,8 @@ export class Sidenav implements OnInit, OnDestroy {
   protected authFacade = inject(AuthFacade);
   private subscription = new Subscription();
   protected currentRoute = signal<string>(this.router.url);
+  protected credentials$ = this.authFacade.userMeRes$;
+  authService: Auth = inject(Auth);
   protected navigationItems: NavItem[] = [
     {
       label: 'Client management',
@@ -81,6 +83,30 @@ export class Sidenav implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getCurrentRoute();
+    this.subscription.add(
+      this.authService.dataListener().subscribe({
+        next: (res) => {
+          console.log('AuthREQ', res);
+          if (res) {
+          console.log('REQ', res);
+
+          } else {
+            this.subscription.add(
+              this.credentials$.subscribe({
+                next: (res) => {
+                 
+                  console.log('StateREQ', res);
+                },
+              })
+            );
+            // this.store.dispatch(
+            //   HostActions.saveUserCredentials({ creds: res })
+            // );
+            //console.log('Budget auth', res);
+          }
+        },
+      })
+    );
   }
 
   getCurrentRoute() {

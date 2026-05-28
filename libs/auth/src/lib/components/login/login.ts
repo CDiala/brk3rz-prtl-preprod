@@ -1,10 +1,14 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   inject,
   OnDestroy,
+  OnInit,
   signal,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -23,9 +27,30 @@ import { Store } from '@ngrx/store';
 import { ButtonComponent } from '@insurFlow/shared';
 import { AuthRequest, EMAIL_REGEX } from '@insurFlow/core';
 import { PasswordHintComponent } from '../password-hint/password-hint';
-import { Subscription } from 'rxjs';
-import { AuthFacade, loginUser } from '@insurFlow/auth-data';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  Subject,
+  Subscription,
+  takeUntil,
+} from 'rxjs';
+import {
+  AuthFacade,
+  loginUser,
+  selectAuthError,
+  selectSpecialAuthError,
+} from '@insurFlow/auth-data';
+import { Dialog } from '@angular/cdk/dialog';
+import { DialogComponent } from '../../../../../shared/ui/src/lib/dialog/dialog.component';
+import * as AuthActions from '../../../../../auth-data/src/lib/+state/auth.actions';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
+export interface BackendError {
+  code: string;
+  message: string;
+  data?: any;
+}
 @Component({
   selector: 'lib-login',
   standalone: true,
@@ -38,12 +63,13 @@ import { AuthFacade, loginUser } from '@insurFlow/auth-data';
     MatCardModule,
     MatIconModule,
     ButtonComponent,
+    DialogComponent,
   ],
   templateUrl: './login.html',
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login implements AfterViewInit, OnDestroy {
+export class Login implements AfterViewInit, OnInit, OnDestroy {
   protected loginForm!: FormGroup;
   protected hidePassword = signal(true);
   protected isLoading = signal(false);
@@ -53,13 +79,115 @@ export class Login implements AfterViewInit, OnDestroy {
   private dialog = inject(MatDialog);
   private authFacade = inject(AuthFacade);
   private subscription = new Subscription();
+  @ViewChild('errorTemplate') errorTemplate!: TemplateRef<string>;
+  protected loginError = '';
+
+  private destroy$ = new Subject<void>();
+  currentErrorCode: string | number | null = null;
+  errorDataPayload: any = null;
 
   constructor() {
     this.createForm();
   }
 
+  // ngOnInit(): void {
+  //   // Clear stale errors on component load
+  //   this.store.dispatch(AuthActions.clearAuthError());
+
+  //   this.store
+  //     .select(selectAuthError)
+  //     .pipe(
+  //       filter((error): error is BackendError => !!{error:}),
+  //       distinctUntilChanged(),
+  //       takeUntil(this.destroy$)
+  //     )
+  //     .subscribe((error) => {
+  //       const licenceErrors = [
+  //         'Invalid email or password.',
+  //         'Invalid request',
+  //       ];
+
+  //       const isLicenceError = licenceErrors.includes(error);
+
+  //       this.loginError = isLicenceError
+  //         ? 'Your licence has expired. Proceed to upload a new licence to regain access.'
+  //         : error;
+
+  //       if (isLicenceError) {
+  //         this.openDialog(this.errorTemplate);
+  //       } else {
+  //         this.openSpecialDialog(this.errorTemplate);
+  //       }
+
+  //       // Delay clearing slightly to avoid immediate re-emission issues
+  //       setTimeout(() => {
+  //         this.store.dispatch(AuthActions.clearAuthError());
+  //       });
+  //     });
+  // }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.store
+        .select(selectSpecialAuthError)
+        .pipe(
+          // Ensure the error object is real and contains message metadata
+          filter(
+            (error): error is BackendError => !!error && 'message' in error,
+          ),
+          distinctUntilChanged(
+            (prev, curr) =>
+              prev.code === curr.code && prev.message === curr.message,
+          ),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((errorData: BackendError) => {
+          const errorMessage = errorData.message;
+          this.currentErrorCode = errorData.code;
+          this.errorDataPayload = errorData.data;
+
+          this.store.dispatch(
+            AuthActions.getUserIdError({
+              userId: errorData.data?.userId || null,
+            }),
+          );
+
+          const isLicenceError = this.currentErrorCode === '04';
+
+          this.loginError = isLicenceError
+            ? 'Your licence has expired. Proceed to upload a new licence to regain access.'
+            : errorMessage;
+
+          // 1. Close active modal queues to handle reset cleanups
+          this.dialog.closeAll();
+
+          // 2. Launch the correct localized dialog template modal interface view
+          if (isLicenceError) {
+            this.openDialog(this.errorTemplate);
+          } else {
+            this.openSpecialDialog(this.errorTemplate);
+          }
+
+          // === CRITICAL FIX ===
+          // Clear the error from state immediately so the subscription doesn't re-execute
+          // when change-detection fires from the newly opened modal.
+          this.store.dispatch(AuthActions.clearAuthError());
+        }),
+    );
+  }
+
   ngAfterViewInit(): void {
     this.checkLogin();
+    //   this.store.select(selectAuthError).subscribe((error) => {
+    //    if(error === 'Invalid email or password.' || error ==='Invalid request') {
+    //     this.loginError = 'Your licence has expired. Proceed to upload a new licence to regain access.';
+    //     this.openDialog(this.errorTemplate);
+    //    } else if (error) {
+    //     this.loginError = error;
+
+    //     this.openSpecialDialog(this.errorTemplate);
+    //   }
+    // });
   }
 
   createForm() {
@@ -93,6 +221,21 @@ export class Login implements AfterViewInit, OnDestroy {
     );
   }
 
+  // checkLogin() {
+  //   this.subscription.add(
+  //     this.authFacade.loggedInUser$
+  //       .pipe(
+  //         filter((res) => !!res), // 2. Blocks null/undefined values from reaching your subscribe block
+  //       )
+  //       .subscribe({
+  //         next: (res) => {
+  //           this.isLoading.set(false);
+  //           // Open your dialog panel here safely
+  //         },
+  //       }),
+  //   );
+  // }
+
   togglePasswordVisibility(): void {
     this.hidePassword.set(!this.hidePassword);
   }
@@ -102,8 +245,8 @@ export class Login implements AfterViewInit, OnDestroy {
       this.isLoading.set(true);
 
       const credentials: AuthRequest = {
-        email: this.loginForm.value.email,
-        password: this.loginForm.value.password,
+        email: this.loginForm.value.email.trim(),
+        password: this.loginForm.value.password.trim(),
       };
 
       this.store.dispatch(loginUser({ credentials }));
@@ -122,7 +265,53 @@ export class Login implements AfterViewInit, OnDestroy {
     this.router.navigate([route]);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openSpecialDialog(template: TemplateRef<any>) {
+    this.dialog.open(DialogComponent, {
+      width: '600px',
+      height: '400px',
+      data: {
+        title: '',
+        content: template,
+        cancelButton: 'Close',
+      },
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // openDialog(template: TemplateRef<any>) {
+  //   this.dialog.open(DialogComponent, {
+  //     width: '600px',
+  //     height: '400px',
+  //     data: {
+  //       title: '',
+  //       content: template,
+  //       cancelButton: 'Proceed',
+  //       loginError: this.loginError
+  //     },
+  //   });
+  // }
+
+  openDialog(template: TemplateRef<any>) {
+    this.dialog.open(DialogComponent, {
+      width: '600px',
+      height: '400px',
+      data: {
+        title: '',
+        content: template,
+        buttonText: 'Proceed',
+        buttonAction: this.renewLicenceRoute.bind(this), // Bind the method to ensure correct 'this' context,
+      },
+    });
+  }
+
+  renewLicenceRoute() {
+    this.router.navigate(['auth/licence-renewal']);
+  }
+
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.subscription.unsubscribe();
   }
 }

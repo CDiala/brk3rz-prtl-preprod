@@ -1,5 +1,8 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AUTH_FEATURE_KEY, AuthState, authAdapter } from './auth.reducer';
+import { BackendError } from 'libs/auth/src/lib/components/login/login';
+import { userAuthId } from './auth.models';
 
 // Lookup the 'Auth' feature state managed by NgRx
 export const selectAuthState =
@@ -40,7 +43,7 @@ export const selectEntity = createSelector(
 
 export const selectLoggedInUser = createSelector(
   selectAuthState,
-  (state: AuthState) => state.visitor,
+  (state: AuthState) => (state ? state.visitor : null),
 );
 
 export const selectPasswordUpdateStatus = createSelector(
@@ -66,4 +69,29 @@ export const selectAccess = createSelector(
 export const selectRefresh = createSelector(
   selectAuthState,
   (state: AuthState) => state.refreshToken,
+);
+
+export const selectSpecialAuthError = createSelector(
+  selectAuthState,
+  (state: AuthState): BackendError | null => state.specialError
+);
+
+export const selectAuthUserId = createSelector(
+  selectAuthState,
+  (state: AuthState): userAuthId | null => state.userId
+);
+
+export const selectUsernameRes = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.usernameRes
+);
+
+export const uploadLicenceRes = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.uploadLicenceRes
+);
+
+export const getUserMeRes = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.getUserMe
 );
