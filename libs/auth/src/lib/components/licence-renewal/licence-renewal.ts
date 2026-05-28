@@ -41,7 +41,10 @@ import {
 } from '@insurFlow/auth-data';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../../../../../shared/ui/src/lib/dialog/dialog.component';
-import { getNameUser, uploadLicenceSuccess } from '../../../../../auth-data/src/lib/+state/auth.actions';
+import {
+  getNameUser,
+  uploadLicenceSuccess,
+} from '../../../../../auth-data/src/lib/+state/auth.actions';
 import * as AuthActions from '../../../../../auth-data/src/lib/+state/auth.actions';
 @Component({
   selector: 'lib-licence-renewal',
@@ -84,7 +87,6 @@ export class LicenceRenewal implements AfterViewInit, OnDestroy {
   protected supportFiles: object[] = [];
   @ViewChild('fileUploadComponent') fileUploadComponent!: AttachUpload;
 
-
   constructor() {
     this.createForm();
     this.subscription.add(
@@ -96,27 +98,31 @@ export class LicenceRenewal implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-   this.authFacade.uploadLicenceRes$.subscribe({
+    this.subscription.add(
+      this.authFacade.uploadLicenceRes$.subscribe({
         next: (res) => {
           console.log('res', res);
-          if(res){
+          if (res) {
             this.resetFileUpload();
             // this.licenceForm.reset();
           }
         },
-      });
+      }),
+    );
 
-    this.store.select(selectAuthError).subscribe((error) => {
-      if (error === 'Invalid request') {
-        this.loginError =
-          'Your licence has expired. Proceed to upload a new licence to regain access.';
-        this.openDialog(this.errorTemplate);
-      } else if (error) {
-        this.loginError = error;
+    this.subscription.add(
+      this.store.select(selectAuthError).subscribe((error) => {
+        if (error === 'Invalid request') {
+          this.loginError =
+            'Your licence has expired. Proceed to upload a new licence to regain access.';
+          this.openDialog(this.errorTemplate);
+        } else if (error) {
+          this.loginError = error;
 
-        this.openSpecialDialog(this.errorTemplate);
-      }
-    });
+          this.openSpecialDialog(this.errorTemplate);
+        }
+      }),
+    );
 
     this.userErrorId$ = this.store.select(selectAuthUserId);
     this.subscription.add(
@@ -241,14 +247,11 @@ export class LicenceRenewal implements AfterViewInit, OnDestroy {
     });
   }
 
-    get isSubmitDisabled(): boolean {
-    return (
-      !this.licenceForm.valid ||
-      this.uploadedFiles.length === 0
-    );
+  get isSubmitDisabled(): boolean {
+    return !this.licenceForm.valid || this.uploadedFiles.length === 0;
   }
 
-   resetFileUpload(): void {
+  resetFileUpload(): void {
     this.fileUploadComponent.resetFiles(); // Directly call resetFiles
   }
 

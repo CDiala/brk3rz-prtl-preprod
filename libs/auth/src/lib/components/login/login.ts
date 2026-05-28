@@ -127,49 +127,53 @@ export class Login implements AfterViewInit, OnInit, OnDestroy {
   // }
 
   ngOnInit(): void {
-    this.store
-      .select(selectSpecialAuthError)
-      .pipe(
-        // Ensure the error object is real and contains message metadata
-        filter((error): error is BackendError => !!error && 'message' in error),
-        distinctUntilChanged(
-          (prev, curr) =>
-            prev.code === curr.code && prev.message === curr.message,
-        ),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((errorData: BackendError) => {
-        const errorMessage = errorData.message;
-        this.currentErrorCode = errorData.code;
-        this.errorDataPayload = errorData.data;
+    this.subscription.add(
+      this.store
+        .select(selectSpecialAuthError)
+        .pipe(
+          // Ensure the error object is real and contains message metadata
+          filter(
+            (error): error is BackendError => !!error && 'message' in error,
+          ),
+          distinctUntilChanged(
+            (prev, curr) =>
+              prev.code === curr.code && prev.message === curr.message,
+          ),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((errorData: BackendError) => {
+          const errorMessage = errorData.message;
+          this.currentErrorCode = errorData.code;
+          this.errorDataPayload = errorData.data;
 
-        this.store.dispatch(
-          AuthActions.getUserIdError({
-            userId: errorData.data?.userId || null,
-          }),
-        );
+          this.store.dispatch(
+            AuthActions.getUserIdError({
+              userId: errorData.data?.userId || null,
+            }),
+          );
 
-        const isLicenceError = this.currentErrorCode === '04';
+          const isLicenceError = this.currentErrorCode === '04';
 
-        this.loginError = isLicenceError
-          ? 'Your licence has expired. Proceed to upload a new licence to regain access.'
-          : errorMessage;
+          this.loginError = isLicenceError
+            ? 'Your licence has expired. Proceed to upload a new licence to regain access.'
+            : errorMessage;
 
-        // 1. Close active modal queues to handle reset cleanups
-        this.dialog.closeAll();
+          // 1. Close active modal queues to handle reset cleanups
+          this.dialog.closeAll();
 
-        // 2. Launch the correct localized dialog template modal interface view
-        if (isLicenceError) {
-          this.openDialog(this.errorTemplate);
-        } else {
-          this.openSpecialDialog(this.errorTemplate);
-        }
+          // 2. Launch the correct localized dialog template modal interface view
+          if (isLicenceError) {
+            this.openDialog(this.errorTemplate);
+          } else {
+            this.openSpecialDialog(this.errorTemplate);
+          }
 
-        // === CRITICAL FIX ===
-        // Clear the error from state immediately so the subscription doesn't re-execute
-        // when change-detection fires from the newly opened modal.
-        this.store.dispatch(AuthActions.clearAuthError());
-      });
+          // === CRITICAL FIX ===
+          // Clear the error from state immediately so the subscription doesn't re-execute
+          // when change-detection fires from the newly opened modal.
+          this.store.dispatch(AuthActions.clearAuthError());
+        }),
+    );
   }
 
   ngAfterViewInit(): void {
