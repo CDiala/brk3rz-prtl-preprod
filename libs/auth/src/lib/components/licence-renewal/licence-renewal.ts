@@ -137,6 +137,7 @@ export class LicenceRenewal implements AfterViewInit, OnDestroy {
       AuthActions.getNameUser({ userId: this.userId as string }),
     );
 
+    this.subscription.add(
     this.store
       .select(selectUsernameRes)
       .pipe(
@@ -150,7 +151,7 @@ export class LicenceRenewal implements AfterViewInit, OnDestroy {
         this.licenceForm.get('companyName')?.patchValue(this.retrievedName);
 
         console.log('Username successfully received:', this.retrievedName);
-      });
+      }));
     this.checkLogin();
   }
 

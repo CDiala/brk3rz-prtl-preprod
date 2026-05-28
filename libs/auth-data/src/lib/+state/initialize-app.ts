@@ -9,10 +9,10 @@ import { AppState } from './app.state';
 export function initializeApp(
   store: Store<AppState>,
   statePersistenceService: StatePersistenceService,
-  platformId: object
+  platformId: object,
 ): void {
   if (!isPlatformBrowser(platformId)) {
-    return; 
+    return;
   }
 
   // 1. Read and dispatch to NgRx synchronously.
@@ -20,19 +20,19 @@ export function initializeApp(
   const initialState = statePersistenceService.loadStateFromSessionStorage();
   if (initialState) {
     store.dispatch(
-      restoreState({ global: initialState as unknown as AuthState })
+      restoreState({ global: initialState as unknown as AuthState }),
     );
   }
 
   // 2. Set up the subscription SYNCHRONOUSLY without a Promise wrapper.
-store
-  .pipe(
-    select((state) => state.auth),
-    filter((authState) => !!authState)
-  )
-  .subscribe((authState) => {
-    // Cast to unknown first, then to Record<string, unknown> to satisfy the strict signature check safely
-    const savePayload = authState as unknown as Record<string, unknown>;
-    statePersistenceService.saveStateToSessionStorage(savePayload);
-  });
+  store
+    .pipe(
+      select((state) => state.auth),
+      filter((authState) => !!authState),
+    )
+    .subscribe((authState) => {
+      // Cast to unknown first, then to Record<string, unknown> to satisfy the strict signature check safely
+      const savePayload = authState as unknown as Record<string, unknown>;
+      statePersistenceService.saveStateToSessionStorage(savePayload);
+    });
 }
